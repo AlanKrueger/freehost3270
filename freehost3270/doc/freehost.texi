@@ -68,15 +68,31 @@ Licenses
 @node What is FreeHost 3270?, Architecture, Overview, Overview
 @comment  node-name,  next,  previous,  up
 @section What is FreeHost 3270?
-FreeHost 3270 is a set of Java Servlets and a Java Applet that enable sites to deploy TN3270 applications to multiple clients via the Web (or on an intranet or VPN).  With FreeHost 3270, a single servlet container + web server can deliver TN3270 clients as well as proxied connectivity to a virtually limitless number of users through their browser.   The FreeHost 3270 client applet was written to be compatible with the earliest Java implementations and does not require that users download the Java 1.2 plugin for VM compatability.
+FreeHost 3270 is a set of Java Servlets and a Java Applet that enable
+sites to deploy TN3270 applications to multiple clients via the Web
+(or on an intranet or VPN).  With FreeHost 3270, a single servlet
+container + web server can deliver TN3270 clients as well as proxied
+connectivity to a virtually limitless number of users through their
+browser.  The FreeHost 3270 client applet was written to be compatible
+with the earliest Java implementations and does not require that users
+download the Java 1.2 plugin for VM compatability.
 @node Architecture,  , What is FreeHost 3270?, Overview
 @comment  node-name,  next,  previous,  up
 @section Architecture
 
 @section Helping out
-FreeHost 3270 needs all the help it can get.  Anyone interested in testing, submitting patches, writing documentation, suggesting new features, and so on is welcome to do so at @url{http://sourceforge.net/projects/freehost3270}.
+FreeHost 3270 needs all the help it can get.  Anyone interested in
+testing, submitting patches, writing documentation, suggesting new
+features, and so on is welcome to do so at
+@url{http://sourceforge.net/projects/freehost3270}.
 @section Reporting bugs
-If you think you've found a bug in FreeHost 3270, you probably have... please don't keep it to yourself.  Bug reports are an invaluable part of open-source participation.  Visit our bug-tracking system at @url{http://sourceforge.net/projects/freehost3270/}.  Of course, you're always welcome to patch against the latest sources @ref{Where to get FreeHost 3270} and send patches to @email{agillesp@@i-no.com}. 
+If you think you've found a bug in FreeHost 3270, you probably
+have... please don't keep it to yourself.  Bug reports are an
+invaluable part of open-source participation.  Visit our bug-tracking
+system at @url{http://sourceforge.net/projects/freehost3270/}.  Of
+course, you're always welcome to patch against the latest sources
+@ref{Where to get FreeHost 3270} and send patches to
+@email{agillesp@@i-no.com}.
 
 
 @node Installation, Licenses, Overview, Top
@@ -86,29 +102,45 @@ If you think you've found a bug in FreeHost 3270, you probably have... please do
 @node Where to get FreeHost 3270, Installing FreeHost 3270, Installation, Installation
 @comment  node-name,  next,  previous,  up
 @section Where to get FreeHost 3270
-You can always download the latest release of FreeHost 3270 at @url{http://www.sourceforge.net/projects/freehost3270/}
+You can always download the latest release of FreeHost 3270 at
+@url{http://www.sourceforge.net/projects/freehost3270/}
 
-For those who want/need access to the latest source updates, anonymous CVS access is available.  
-The following commands should do the trick.
+For those who want/need access to the latest source updates, anonymous
+CVS access is available.  The following commands should do the trick.
 @example
-cvs -d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270 login
+cvs
+-d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270
+login
 @end example
 When CVS prompts you for a password, press @key{ENTER}, then
 @example
-cvs -z3 -d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270 co freehost3270
+cvs -z3
+-d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270
+co freehost3270
 @end example
-Eventually, I'll put a separate section on building from source in this here documentation. In the meantime, there's a standard ant @file{build.xml} file in the top-level project directory.  Make sure you have ant installed @url{http://jakarta.apache.org/ant/}, cd to @file{my-development-dir/freehost3270} type 'ant', and you should be all set.
+Eventually, I'll put a separate section on building from source in
+this here documentation. In the meantime, there's a standard ant
+@file{build.xml} file in the top-level project directory.  Make sure
+you have ant installed @url{http://jakarta.apache.org/ant/}, cd to
+@file{my-development-dir/freehost3270} type 'ant', and you should be
+all set.
 
 
 @node Installing FreeHost 3270, Configuration, Where to get FreeHost 3270, Installation
 @comment  node-name,  next,  previous,  up
 @section Installing FreeHost 3270
 
-Installing FreeHost 3270 is so easy, it hurts to think about it.  Simply drop the @file{freehost-version.war} file from the distribution in your Servlet Container's @file{./webapps/} directory.
+Installing FreeHost 3270 is so easy, it hurts to think about it.
+Simply drop the @file{freehost-version.war} file from the distribution
+in your Servlet Container's @file{./webapps/} directory.
 
-If your servlet container requires you to restart in order to deploy a new war, do so.
+If your servlet container requires you to restart in order to deploy a
+new war, do so.
 
-The configuration defaults in the distrubition are sensible enough that you should be able to test your FreeHost 3270 installation now.  Open your favorite browser and point it at whatever url makes sense in your environment:
+The configuration defaults in the distrubition are sensible enough
+that you should be able to test your FreeHost 3270 installation now.
+Open your favorite browser and point it at whatever url makes sense in
+your environment:
 
 @url{http://localhost:8080/freehost3270/freehost}
 

@@ -1,4 +1,4 @@
-<project name="freehost3270" default="deploy" basedir="/home/agillesp/src/development/freehost3270">
+<project name="freehost3270" default="deploy" basedir="C:/Documents and Settings/Art Gillespie/My Documents/devel/freehost3270">
  <target name="init">
   <property file="${basedir}/build.properties"/>
   <property name="name" value="freehost3270"/>
@@ -7,7 +7,7 @@
   <property name="lib.dir" value="lib"/>
   <property name="build.dir" value="build"/>
   <property name="web-classes.dest" value="${lib.dir}/WEB-INF/classes"/>
-  <property name="web.classpath" value="${servlet.jar}:${basedir}/thirdparty/log4j-core.jar"/>
+  <property name="web.classpath" value="${servlet.jar};${basedir}/thirdparty/log4j-core.jar"/>
   <property name="pkg-dist.name" value="${name}--pkg"/>
  </target>
 

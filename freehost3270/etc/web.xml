@@ -1,3 +1,6 @@
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
  <display-name>freeHost3270</display-name>
  <description>
@@ -10,12 +13,12 @@
  <servlet>
       <servlet-name>freehost3270</servlet-name>
       <servlet-class>com.ino.freehost.servlet.SessionServer</servlet-class>
-      <load-on-startup>1</load-on-startup>
+
       <init-param>
         <param-name>freehost.properties</param-name>
         <param-value>WEB-INF/freehost.properties</param-value>
       </init-param>
-      
+      <load-on-startup>1</load-on-startup>      
  </servlet>
  <servlet>
   <servlet-name>freehost</servlet-name>
