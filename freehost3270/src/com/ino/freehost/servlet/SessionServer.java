@@ -62,78 +62,6 @@ public class SessionServer extends HttpServlet
      * The default host's port
      */
     String  rightHostHostPort       = null;
-    /** 
-     * The default setting for encryption on or off (t/f)
-     */
-    String  rightHostEncryption     = null;
-    /**
-     * Admin's user name
-     */
-    private String adminName;
-    /**
-     * Admin's password
-     */
-    private String adminPass;
-    /**
-     * Admin's email notification address
-     */
-    private String adminEmail;
-    /**
-     * SMTP Server used for sending notification emails
-     */
-    private String smtpserver;
-    /** 
-     * Should the server notify the admin and when
-     */
-    protected boolean emailNotifyNotResponding;
-    protected boolean emailNotifyHostNotResponding;
-    protected boolean emailNotifyXSessionsAreActive;
-    protected int     emailNotifyXSessions;
-    /**
-     * Logfile
-     */
-    private File logFile;
-    protected boolean logAdminLogin;
-    protected boolean logBroadcastMessage;
-    protected boolean logKilledClient;
-    protected boolean logSessionStart;
-    protected boolean logSessionEnd;
-    protected boolean logServerErrors;
-    /**
-     * SessionServer variables
-     */
-    //the hostname/ip address of the sessionserver.  This
-    //value is used in the <applet> tag on the html that
-    //serves up a client.
-    private String sessionServerHost;
-    private int sessionServerPort;
-    //indicates whether loadbalancing is on or off
-    private boolean loadBalancing;
-    //vector of loadbalancing hosts
-    private Vector loadBalancingServers;
-    //indicates whether loadbalancing is on or off
-    private boolean encryption;
-    //the ip filter mode
-    private int filterMode;//0 = none; 1 = allExcept; 2 = only
-    //the list of hosts to filter
-    private Vector filterList;
-    //the list of 3270 hosts...
-    //TO DO:  Create a class for this Friendly Name, Host Name, port, isDefault, etc.
-    private Vector hostList;
-    //indicates whether the client can manually enter hosts to access
-    //this value is used in the <applet> tag on the html that
-    //serves up the client
-    private boolean manualEntry;
-    //the directory in which the admin.properties
-    //file can be found.
-    public static File propsDirectory;
-    //If we're running with a RightHost HTTP server
-    //as our context;
-    private String helpabout;
-    private boolean isRightHostHTTP;
-    private int httpPort;
-    private File adminFile;
-    private Properties config;
     private Proxy p;
     private Thread process;
     private boolean serverRunning;
@@ -141,10 +69,7 @@ public class SessionServer extends HttpServlet
     private Date expirationDate;
     private int encryptionType;
     private int licenseType;
-    public String getPropsDirectory()
-    {
-	return adminFile.getParent();
-    }
+
     /**
      * This overrides the Servlet.init() method and initializes all of our
      * property values from the admin.properties file.
@@ -158,75 +83,14 @@ public class SessionServer extends HttpServlet
 	cat = Category.getInstance("freehost3270.SessionServer");
 	cat.info("Initializing freehost3270");
 	String rootpath = c.getServletContext().getRealPath("");
-	cat.debug("Grabbing File: " + rootpath + File.separator + c.getInitParameter("freehost.properties"));
-	adminFile = new File(rootpath + File.separator + c.getInitParameter("freehost.properties"));
-	cat.info("Configuring freehost3270 with " + c.getInitParameter("freehost.properties"));
-	//Now that we have the directory, we'll load in the admin.properties
-	//file.
-	FileInputStream fis = null;
-	try
-	    {
-		fis = new FileInputStream(adminFile);
-		config = new Properties();
-		config.load(fis);
-		fis.close();
-	    }
-	catch(Exception e)
-	    {
-		System.out.println("Cannot find admin.properties file.  Please ensure that it has not been deleted." + e.getMessage());
-		error("Could not find admin.properties file at " + adminFile + ". Please ensure that it has not been deleted.");
 
-	    }
-
-
-	adminName = config.getProperty("username");
-	adminPass = config.getProperty("password");
-	adminEmail = config.getProperty("adminEmail");
-	smtpserver = config.getProperty("smtpserver");
-	//TO DO: Admin emailNotify and logging:
-	logAdminLogin = Boolean.valueOf(config.getProperty("logAdminLogin")).booleanValue();
-	logBroadcastMessage = Boolean.valueOf(config.getProperty("logBroadcastMessage")).booleanValue();
-	logKilledClient = Boolean.valueOf(config.getProperty("logKilledClient")).booleanValue();
-	logSessionStart = Boolean.valueOf(config.getProperty("logSessionStart")).booleanValue();
-	logSessionEnd = Boolean.valueOf(config.getProperty("logSessionEnd")).booleanValue();
-	logServerErrors = Boolean.valueOf(config.getProperty("logServerErrors")).booleanValue();
-	emailNotifyHostNotResponding = Boolean.valueOf(config.getProperty("emailNotifyHostNotResponding")).booleanValue();
-	emailNotifyXSessionsAreActive = Boolean.valueOf(config.getProperty("emailNotifyXSessionsAreActive")).booleanValue();
-	emailNotifyXSessions = Integer.parseInt(config.getProperty("emailNotifyXSessions"));
-	logFile = new File(config.getProperty("logFile"));
-	sessionServerHost = config.getProperty("sessionServerHost");
-	sessionServerPort = Integer.parseInt(config.getProperty("sessionServerPort"));
-	loadBalancing = Boolean.valueOf(config.getProperty("loadBalancing")).booleanValue();
-	loadBalancingServers = getLoadBalancingServers(config.getProperty("loadBalancingServers"));
-	encryption = Boolean.valueOf(config.getProperty("encryption")).booleanValue();
-	filterMode = Integer.parseInt(config.getProperty("filterMode"));
-	filterList = getFilterList(config.getProperty("filterList"));
-	hostList = getHostList(config.getProperty("hostList"));
-	manualEntry = Boolean.valueOf(config.getProperty("manualEntry")).booleanValue();
-	if(getServletContext().getServerInfo().equals("RightWare SessionServer HTTP Server"))
-	    isRightHostHTTP = true;
-	else
-	    isRightHostHTTP = false;
-	if(isRightHostHTTP)
-	    {
-		try
-		    {
-			FileInputStream fis2 = new FileInputStream("props" + File.separator + "server.properties");
-			Properties p = new Properties();
-			p.load(fis2);
-			fis2.close();
-			httpPort = Integer.parseInt(p.getProperty("server.port"));
-		    }
-		catch(Exception e)
-		    {
-			error(e.getMessage());
-		    }
-	    }
-	activeSessionMessages = new Vector();
-	helpabout = config.getProperty("helpabout");
-	startServer();
-	serverRunning = true;
-	//sendmail("The SessionServer was started at " + new Date());
+	String adminFile = rootpath + File.separator + c.getInitParameter("freehost.properties");
+	try {
+	    FreeHostConfiguration.getInstance().init(adminFile);
+	    startServer();
+	} catch (ConfigurationException anException) {
+	    throw new ServletException(anException);
+	}
     }
     private Vector getLoadBalancingServers(String in)
     {
@@ -240,64 +104,7 @@ public class SessionServer extends HttpServlet
 	    }
 	return ret;
     }
-    private Vector getFilterList(String in)
-    {
-	Vector ret = new Vector();
-	if(in == null)
-	    return ret;
-	StringTokenizer st = new StringTokenizer(in, "|");
-	while(st.hasMoreTokens())
-	    {
-		ret.addElement(new RWFilterAddress(st.nextToken()));
-	    }
-	return ret;
-    }
-    public int getFilterMode()
-    {
-	return filterMode;
-    }
-    public Vector getFilterList()
-    {
-	return filterList;
-    }
-    private Vector getHostList(String hostList)
-    {
-	Vector ret = new Vector();
-	StringTokenizer st2 = new StringTokenizer(hostList, "|");
-	while(st2.hasMoreTokens())
-	    {
-		String hostName = st2.nextToken();
-		int hostPort = Integer.parseInt(st2.nextToken());
-		String friendlyName = st2.nextToken();
-		Host h = new Host(hostName, hostPort, friendlyName);
-		ret.addElement(h);
-	    }
-	return ret;
-    }
-    public String getHostList()
-    {
-	return config.getProperty("hostList");
-    }
-    public Enumeration getHosts()
-    {
-    	return hostList.elements();
-    }
-    public boolean getManualEntry()
-    {
-	return manualEntry;
-    }
-    public boolean getEncryption()
-    {
-	return encryption;
-    }
-    public String getSessionServerHost()
-    {
-	return sessionServerHost;
-    }
-    public int getSessionServerPort()
-    {
-	return sessionServerPort;
-    }
+
     public boolean moreConnections()
     {
     	if(connections == 0)
@@ -319,13 +126,6 @@ public class SessionServer extends HttpServlet
     public void doPost(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException
     {
-        if(loadBalancing)
-	    {
-	        if(req.getParameter("load") != null)
-		    {
-	        	res.getOutputStream().print(p.connections.size());
-		    }
-	    }
         doGet(req, res);
     }
     /** 
@@ -428,59 +228,6 @@ public class SessionServer extends HttpServlet
 		broadcastMessage(req.getParameter("broadcast"));
 		return;
 	    }
-	/*
-	 * We authorize the Admin here using standard HTTP authentication
-	 */
-	boolean authorized = true;
-	String auth = req.getHeader("authorization");
-	ServletOutputStream out = res.getOutputStream();
-	/*
-	 * If there's no authorization header provided with the request, send
-	 * back the 401 code
-	 */    
-	if(auth == null)
-	    {
-		res.setStatus(res.SC_UNAUTHORIZED);
-		return;
-	    }
-	else
-	    {
-		//trim off the auth-type BASIC xxxxx:xxxxx
-		auth = auth.substring(auth.indexOf(' ') + 1);
-       
-		//decode the remaining data xxxxx:xxxxx
-		//auth = b64.processData(auth);
-		if(auth.equals(":"))
-		    {
-			res.sendError(res.SC_UNAUTHORIZED, "You don't have access to this resource");
-			return;
-		    }
-		//get the user and pass tokens (separated by :)
-		StringTokenizer st = new StringTokenizer(auth, ":");
-		String user = st.nextToken();
-		String pass = st.nextToken();
-		if(!user.equals(adminName) || !pass.equals(adminPass))
-		    {
-			res.sendError(res.SC_UNAUTHORIZED, "You don't have access to this resource");
-			return;
-		    }
-	    }
-	if(!authorized)
-	    {
-		res.sendError(res.SC_FORBIDDEN, "You don't have access to this resource.");
-		return;
-	    }
-	res.setContentType("text/html");
-	/*
-	 * The next long block of code tests the incoming URL parameters and fires off
-	 * The appropriate methods.  The "action" parameter is used to denote what
-	 * needs to be performed.  Additional parameters are identified for different
-	 * functions of the Admin interface.
-	 */
-	String action = req.getParameter("action");
-	if(action != null && !action.equals(""))
-	    {
-	    }
 
     }
     public boolean isRunning()
@@ -490,12 +237,12 @@ public class SessionServer extends HttpServlet
     public boolean checkFilter(ServletRequest req)
     {
 	RWFilterAddress client = new RWFilterAddress(req.getRemoteAddr());
-	Enumeration e = filterList.elements();
+	Enumeration e = FreeHostConfiguration.getInstance().getFilterList();
 	boolean flag = false;
 	while(e.hasMoreElements())
 	    {
 		RWFilterAddress tmp = (RWFilterAddress)e.nextElement();
-		if(filterMode == 2)
+		if(FreeHostConfiguration.getInstance().getFilterMode() == 2)
 		    {
 			if(!tmp.equals(client))
 			    continue;
@@ -505,7 +252,7 @@ public class SessionServer extends HttpServlet
 				break;
 			    }
 		    }
-		if(filterMode == 1)
+		if(FreeHostConfiguration.getInstance().getFilterMode() == 1)
 		    {
 			if(tmp.equals(client))
 			    continue;
@@ -518,57 +265,6 @@ public class SessionServer extends HttpServlet
 	    }
 	return flag;
     }  	 
-    /**
-     * This method will return the hostname of the least loaded
-     * loaded server from the loadbalancing Vector, or null if the
-     * current SessionServer is the least loaded, or if loadBalancing
-     * is not enabled.
-     * @return Name of the least loaded server
-     */
-    public String getLeastLoaded()
-	throws SessionServerNotRunningException
-    {
-	if(!serverRunning)
-	    throw new SessionServerNotRunningException();
-	//if we're not loadBalancing, then the
-	//client shouldn't have called this method
-	if(!loadBalancing)
-	    return null;
-	String ret = null;
-	Enumeration e = loadBalancingServers.elements();
-	while(e.hasMoreElements())
-	    {
-			  
-		int clients = 0;
-		if(p.connections != null)
-		    clients = p.connections.size();
-		String h = (String)e.nextElement();
-		String u = "http://" + h + "/Admin?load=1";
-		//System.out.println(u);
-		try
-		    {
-			URL url = new URL(u);
-			URLConnection c = url.openConnection();
-			if(c.getContent() instanceof BufferedInputStream)
-			    {
-				BufferedInputStream bis = (BufferedInputStream)c.getContent();
-				int b = bis.read();
-				if(b < clients)
-				    {
-					clients = b;
-					ret = h;
-				    }
-			    }
-		    }
-		catch(MalformedURLException ee){continue;}
-		catch(IOException ee){continue;}
-	    }
-	return ret;  	
-    }
-    public boolean getLoadBalancing()
-    {
-	return loadBalancing;
-    }
     public void restartServer()
     {
 	stopServer();
@@ -597,14 +293,18 @@ public class SessionServer extends HttpServlet
 	try
 	    {
 		//Initialize and start the proxy server.
-		p = new Proxy(sessionServerPort, encryption, this);
+		cat.debug("Creating new Proxy on port: " +
+			  FreeHostConfiguration.getInstance().getSessionServerPort());
+		p = new Proxy(FreeHostConfiguration.getInstance().getSessionServerPort(), 
+			      false, 
+			      this);
 		process = new Thread(p);
 		process.start();
 		serverRunning = true;
 	    }
 	catch(IOException e)
 	    {
-		error("ERROR: While trying to start the SessionServer, the following error was encountered: " + e.getMessage());	
+		cat.error("ERROR: While trying to start the SessionServer, the following error was encountered: " + e.getMessage());	
 	    }
     }
     /**
@@ -641,7 +341,7 @@ public class SessionServer extends HttpServlet
 		    }
 		catch(IOException ex)
 		    {
-			error(ex.getMessage());
+			cat.error(ex.getMessage());
 		    }
 	    }
     }
@@ -702,70 +402,8 @@ public class SessionServer extends HttpServlet
     {
 	activeSessionMessages.addElement(s);
     }
-    public void log(int code, String msg, Connection c)
-    {
-	FileWriter logOutput = null;
-	Date now = new Date();
-	try
-	    {
-		logOutput = new FileWriter(logFile.toString(), true);
-	    }
-	catch(IOException e)
-	    {
-		debug(e.getMessage());
-	    }
-	if(code >= 200)
-	    {
-		switch(code)
-		    {
-		    case SS_GENERAL_ERROR:
-			break;
-		    }
-	    }
-	else if(code >= 100 && code < 200)
-	    {
-		//information
-		switch(code)
-		    {
-		    case SS_CONNECT:
-			try
-			    {
-				logOutput.write(now + "\t" + getSessionServerHost() + "\t" + "session" + "\t" + "101" + "\t" + "Connect" + "\t" + c.getSrcHost() + "\t" + c.getDestHost() + "\t" + c.getDestPort() + "\t" + msg + "\n");
-			    }
-			catch(IOException e){}
-			break;
-		    case SS_DISCONNECT:
-			//disconnect
-			try
-			    {
-				logOutput.write(now + "\t" + getSessionServerHost() + "\t" + "session" + "\t" + "101" + "\t" + "Disconnect" + "\t" + c.getSrcHost() + "\t" + c.getDestHost() + "\t" + c.getDestPort() + "\t" + msg + "\n");
-			    }
-			catch(IOException e){}
-			break;
-		    }
-	    }
-	else
-	    {
-		//debug
-	    }
-	try
-	    {
-		logOutput.close();
-	    }
-	catch(IOException e)
-	    {
-		debug(e.getMessage());
-	    }
-    }
-    public void error(String msg)
-    {
-	if(logServerErrors)
-	    log(SS_GENERAL_ERROR, msg, null);
-    }
-    public void debug(String msg)
-    {	
-	log(SS_GENERAL_DEBUG, msg, null);
-    }
+
+
     /**
      * This method sends mail to the administrator at the
      * address specified in the admin interface.
@@ -775,18 +413,22 @@ public class SessionServer extends HttpServlet
     {
 	try
 	    {
-		Socket smtp = new Socket(smtpserver, 25);
+		Socket smtp = new Socket(FreeHostConfiguration.getInstance().getSmtpServer(), 
+					 25);
 		OutputStream os = smtp.getOutputStream();
 		PrintStream ps = new PrintStream(os);
 		InputStream is = smtp.getInputStream();
 		DataInputStream mailDis = new DataInputStream(is);
-		ps.println("HELO " + getSessionServerHost());
+		ps.println("HELO " + 
+			   FreeHostConfiguration.getInstance().getSessionServerHost());
 		ps.flush();
 		mailDis.readLine();
-		ps.println("MAIL FROM: \"RightHost SessionServer\" <righthost@" + sessionServerHost + ">");
+		ps.println("MAIL FROM: \"FreeHost 3270 SessionServer\" <freehost@" + 
+			   FreeHostConfiguration.getInstance().getSessionServerHost() + ">");
 		ps.flush();
 		mailDis.readLine();
-		ps.println("RCPT TO: " + adminEmail);
+		ps.println("RCPT TO: " + 
+			   FreeHostConfiguration.getInstance().getAdminEmail());
 		ps.flush();
 		mailDis.readLine();
 		ps.println("DATA");
@@ -801,11 +443,11 @@ public class SessionServer extends HttpServlet
 	    }
 	catch(UnknownHostException e)
 	    {
-	  	error(e.getMessage());
+	  	cat.error(e.getMessage());
 	    }
 	catch(IOException e)
 	    {
-		error(e.getMessage());
+		cat.error(e.getMessage());
 	    }		
 	System.gc();
     }
@@ -876,6 +518,7 @@ class Proxy implements ConnectionMonitor, Runnable
 	    {
 		try
 		    {
+			cat.debug("Waiting for new connections...");
 			Socket newSocket = mainSocket.accept();
 			cat.debug("New connection...");
 			new Connection(newSocket, (ConnectionMonitor)this, host, hostPort, encrypt, ss);
@@ -885,7 +528,7 @@ class Proxy implements ConnectionMonitor, Runnable
 		catch(IOException e)
 		    {
              		e.printStackTrace();
-             		ss.error(e.getMessage());	
+             		cat.error(e.getMessage());	
 		    }
 	    }
     }
@@ -907,8 +550,7 @@ class Proxy implements ConnectionMonitor, Runnable
 	    {
 		connections.addElement(c);
 	    }
-	if(ss.logSessionStart)
-	    ss.log(ss.SS_CONNECT, "", c);
+	    cat.info("New Session from: " + c.getSrcHost() + "-->" + c.getDestHost());
     }
     /**
      * Removes a Connection object from the connections Vector.
@@ -920,8 +562,7 @@ class Proxy implements ConnectionMonitor, Runnable
 	    {
 		connections.removeElement(c);
 	    }
-	if(ss.logSessionEnd)
-	    ss.log(ss.SS_DISCONNECT, "", c);
+	    cat.info("Session Closed for: " + c.getSrcHost() + "-->" + c.getDestHost());
     }
     /**
      * Empty Method. TO DO:  This should probably write to a log
@@ -949,9 +590,10 @@ interface AgentMonitor
  */
 class AgentIn implements Runnable
 {
+    private Category cat;
     /**
      * The InputStream from the client.
-    */
+     */
     private InputStream in  = null;
     /**
     * The OutputStream to the host.
@@ -979,8 +621,9 @@ class AgentIn implements Runnable
 	this.in  = eis;
 	this.out = out;
 	this.am  = am;
+	cat = Category.getInstance("freehost.AgentIn");
 	buffer = new byte[BUFFER_SIZE];
-	//System.out.println("Agent In Started...");
+	cat.debug("Agent In Started...");
 	Thread t = new Thread(this);
 	t.start();
     }
@@ -1088,23 +731,7 @@ class AgentOut implements Runnable
 
 			out.write(buffer, 0, bytesRead);
 			out.flush();
-			/*
-			  FileWriter fw = new FileWriter("debug.this", true);
-			  fw.write("FROM HOST:\n\n");
-			  for(int i = 0; i < bytesRead; i++)
-			  {
-			  if(i % 16 == 0)
-			  fw.write('\n');
-			  int x = 0;                    
-			  if(( x = buffer[i] ) < 0)
-			  x += 256;
-                                    
-			  fw.write(Integer.toHexString(x) + " ");
-			  }
-			  fw.write("\n\n\n\n");
-			  fw.close();
-			*/
-			//System.gc();
+
 		    }
 	    }
 	catch(IOException e)
@@ -1202,80 +829,57 @@ class Connection implements Runnable, AgentMonitor
      */
     public Connection(Socket s, ConnectionMonitor cm, String host, int hostPort, boolean encryption, SessionServer sessionserver)
     {
-	cat = Category.getInstance("SessionServer.Connection");
-	cat.debug("Creating new connection...");
-	srcSocket = s;
-	this.cm   = cm;
-	destHost = host;
-	destPort = hostPort;
-	cm.attemptingConnection(this);
-	sessionStarted = new Date();
-	encrypt = encryption;
-	this.sessionserver = sessionserver;
-	cat.debug("Connection variables initialized...");
-	try
-	    {
-		// Establish read/write for the socket
-		srcIn  = s.getInputStream();
-		srcOut = s.getOutputStream();
-		//if we're encrypting, do the diffie-helman thing
-		//rwc = new RWCipher("123456");		
-		byte prime[] = {20, 120, -86, 121, -45, -121, 100, -28, 112, 105, 
-				-20, 1, -87, 95, 41, 69, -66, -75, 63, 4, 
-				8, -71, -101, 25, -66, -125, -74, -29, -24, -104, 
-				70, 79, 60, -96, -108, 33, 45, -43, -29, 55, 
-				-7, 108, -92, -114, 71, -53, -75, -19, 120, 127, 
-				58, 28, 15, 85, 33, -118, 47, -63, 33, 40, 
-				-11, -7, -16, -123, };
-		byte gprime[] = {42, -75, -126, 69, 69, -115, 
-				 -95, -63, 109, 9, 64, 110, 121, -119, -119, 52, 
-				 37, -112, 73, -63, 82, 89, -22, 23, 110, 4, 
-		};	        
-		//System.out.println("Creating cipher...");
+	try {
+	    cat = Category.getInstance("SessionServer.Connection");
+	    cat.debug("Creating new connection...");
+	    srcSocket = s;
+	    this.cm   = cm;
+	    destHost = host;
+	    destPort = hostPort;
+	    cm.attemptingConnection(this);
+	    sessionStarted = new Date();
+	    encrypt = encryption;
+	    this.sessionserver = sessionserver;
+	    cat.debug("Connection variables initialized...");
+	    // Establish read/write for the socket
+	    srcIn  = s.getInputStream();
+	    srcOut = s.getOutputStream();
 
-		//System.out.println(encrypt);
-		eos = srcOut;
-		eis = srcIn;
+	    eos = srcOut;
+	    eis = srcIn;
       
-		//check for host info;
-		int i = 0;
-		byte hostNameIn[] = new byte[512];
-		byte thisByte = 0x00;
-		//the client will send 0xCC when it
-		//is done sending the hostname, if any.
-		cat.debug("Reading host request...");
-		while(thisByte != (byte)0xCC)
-		    {
-			thisByte = (byte)eis.read();
-			hostNameIn[i] = thisByte;
-			i++;
-		    }
-		//the byte immediately following 0xCC will
-		//be the port number.
-		byte port = (byte)eis.read();
-		byte hostNameDone[] = new byte[i];
-		System.arraycopy(hostNameIn, 0, hostNameDone, 0, i - 1);
-		cat.debug("Connecting to: " + new String(hostNameDone));
-		if(i > 1)//if the new string != "", then we have a client-assigned host.
-		    {
-			destHost = new String(hostNameDone).trim();
-			destPort = (int)port;
-			//System.out.println(destHost + " port: " + destPort);
-		    }
+	    //check for host info;
+	    int i = 0;
+	    byte hostNameIn[] = new byte[512];
+	    byte thisByte = 0x00;
+	    //the client will send 0xCC when it
+	    //is done sending the hostname, if any.
+	    cat.debug("Reading host request...");
+	    while(thisByte != (byte)0xCC)
+		{
+		    thisByte = (byte)eis.read();
+		    hostNameIn[i] = thisByte;
+		    i++;
+		}
+	    //the byte immediately following 0xCC will
+	    //be the port number.
+	    byte port = (byte)eis.read();
+	    byte hostNameDone[] = new byte[i];
+	    System.arraycopy(hostNameIn, 0, hostNameDone, 0, i - 1);
+	    cat.debug("Connecting to: " + new String(hostNameDone));
+	    if(i > 1)//if the new string != "", then we have a client-assigned host.
+		{
+		    destHost = new String(hostNameDone).trim();
+		    destPort = (int)port;
+		}
 
-		//System.out.println("Hostname: " + new String(hostNameDone));   
-		// Start ourself, so there's no delay in getting back
-		// to the server to listen for new connections
-		Thread t = new Thread(this);
-		t.start();
-	    }
-	catch(IOException e)
-	    {
-		cat.error(e.getMessage());
-		cm.connectionError(this, "" + e);
-	    }
-	System.gc();
+	    Thread t = new Thread(this);
+	    t.start();
+	} catch (Exception anException) {
+	    cat.error(anException.getMessage());
+	}
     }
+
     /**
      * Start the thread.
      */
@@ -1364,24 +968,22 @@ class Connection implements Runnable, AgentMonitor
 	catch(Exception e)
 	    {
 		//send email to the admin
-		if(sessionserver.emailNotifyHostNotResponding)
+		if(FreeHostConfiguration.getInstance().getEmailHostNotResponding())
 		    {	
 			StringBuffer sb = new StringBuffer();
 			sb.append((new Date()).toString() + ": the TN3270 Gateway at " + destHost + " failed to respond ");
-			sb.append("to a request from this RightHost 3270 SessionServer.\n\n");
+			sb.append("to a request from FreeHost 3270 SessionServer.\n\n");
 			sb.append("The error may have several causes, including:\n\n");
 			sb.append("\t1. The 3270 host may not be responding to the TN3270 gateway.\n");
 			sb.append("\t2. The TN3270 gateway to the host may be down.\n");
-			sb.append("\t3. The DNS name or IP address for the TN3270 gateway as specified in the RightHost 3270. ");
+			sb.append("\t3. The DNS name or IP address for the TN3270 gateway as specified in the FreeHost 3270. ");
 			sb.append("administrator's interface may not be valid.\n");
 			sb.append("\t4. Excessive network traffic may have prevented a response from the TN3270 gateway within the specified timeout period\n\n");
-			sb.append("Should you require it, support for RightHost 3270 is available at no charge via our web ");
-			sb.append("site: http://www.rightware.com.  In addition, telephone support is available at the rate of ");
-			sb.append("$100 USD per incident by calling (973)378-2300.\n\n");
-			sb.append("Thank you for using RightHost 3270.");
+			sb.append("Support for FreeHost 3270 is available through the FreeHost 3270 user's mailing list at http://lists.sourceforge.net/lists/listinfo/freehost3270-users");
+			sb.append("Thank you for using FreeHost 3270.");
 			sessionserver.sendmail(sb.toString());												
 		    }
-		sessionserver.error("The 3270 Host failed to respond.");
+		cat.error("The 3270 Host failed to respond.");
 		cm.connectionError(this, "connect error: "
 				   + destHost + "/" + destPort + " " + e);
 		return(false);
@@ -1400,7 +1002,7 @@ class Connection implements Runnable, AgentMonitor
 	    }
 	catch(Exception e) 
 	    {
-		sessionserver.error(e.getMessage());
+		cat.error(e.getMessage());
 	    }
     }
 
@@ -1415,7 +1017,7 @@ class Connection implements Runnable, AgentMonitor
 	    }
 	catch(Exception e)
 	    {
-		sessionserver.error(e.getMessage());	
+		cat.error(e.getMessage());	
 	    }
     }
     /**
