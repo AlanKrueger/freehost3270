@@ -696,6 +696,7 @@ public class RW3270
       {
          synchronized(waitObject)
          {
+ 			waitForReturn = false;
             waitObject.wait(timeout * 1000);
          }
       }
