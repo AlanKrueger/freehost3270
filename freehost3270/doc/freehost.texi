@@ -55,6 +55,10 @@ documentation, please visit http://freehost3270.sourceforge.net
 Licenses
 
 
+
+Licenses
+
+
 @end menu
 
 @node Overview, Installation, Top, Top
@@ -65,11 +69,15 @@ Licenses
 @comment  node-name,  next,  previous,  up
 @section What is FreeHost 3270?
 FreeHost 3270 is a set of Java Servlets and a Java Applet that enable sites to deploy TN3270 applications to multiple clients via the Web (or on an intranet or VPN).  With FreeHost 3270, a single servlet container + web server can deliver TN3270 clients as well as proxied connectivity to a virtually limitless number of users through their browser.   The FreeHost 3270 client applet was written to be compatible with the earliest Java implementations and does not require that users download the Java 1.2 plugin for VM compatability.
-
-
 @node Architecture,  , What is FreeHost 3270?, Overview
 @comment  node-name,  next,  previous,  up
 @section Architecture
+
+@section Helping out
+FreeHost 3270 needs all the help it can get.  Anyone interested in testing, submitting patches, writing documentation, suggesting new features, and so on is welcome to do so at @url{http://sourceforge.net/projects/freehost3270}.
+@section Reporting bugs
+If you think you've found a bug in FreeHost 3270, you probably have... please don't keep it to yourself.  Bug reports are an invaluable part of open-source participation.  Visit our bug-tracking system at @url{http://sourceforge.net/projects/freehost3270/}.  Of course, you're always welcome to patch against the latest sources @ref{Where to get FreeHost 3270} and send patches to @email{agillesp@@i-no.com}. 
+
 
 @node Installation, Licenses, Overview, Top
 @comment  node-name,  next,  previous,  up
@@ -79,6 +87,18 @@ FreeHost 3270 is a set of Java Servlets and a Java Applet that enable sites to d
 @comment  node-name,  next,  previous,  up
 @section Where to get FreeHost 3270
 You can always download the latest release of FreeHost 3270 at @url{http://www.sourceforge.net/projects/freehost3270/}
+
+For those who want/need access to the latest source updates, anonymous CVS access is available.  
+The following commands should do the trick.
+@example
+cvs -d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270 login
+@end example
+When CVS prompts you for a password, press @key{ENTER}, then
+@example
+cvs -z3 -d:pserver:anonymous@cvs.freehost3270.sourceforge.net:/cvsroot/freehost3270 co freehost3270
+@end example
+Eventually, I'll put a separate section on building from source in this here documentation. In the meantime, there's a standard ant @file{build.xml} file in the top-level project directory.  Make sure you have ant installed @url{http://jakarta.apache.org/ant/}, cd to @file{my-development-dir/freehost3270} type 'ant', and you should be all set.
+
 
 @node Installing FreeHost 3270, Configuration, Where to get FreeHost 3270, Installation
 @comment  node-name,  next,  previous,  up
@@ -94,10 +114,88 @@ The configuration defaults in the distrubition are sensible enough that you shou
 
 The FreeHost TN3270 Emulator should pop up and connect to Harvard's HOLLIS information system.  (Assuming your host is connected to the web and is able to get out on port 23.)
 
-@node Configuration,  , Installing FreeHost 3270, Installation
+@node Configuration, Troubleshooting, Installing FreeHost 3270, Installation
 @comment  node-name,  next,  previous,  up
 @section Configuring FreeHost 3270
-FreeHost 3270 is configured through the @file{WEB-INF/freehost.properties} file.  
+FreeHost 3270 is configured through the @file{WEB-INF/freehost.properties} file.  What follows
+is a short description of each entry@footnote{In release 0.2, the configuration will move to an xml-based configuration file.};.
+
+
+@deffn Config sessionServerHost
+The SessionServer host that tn3270 clients will connect back to.  Note that in the case of the Java TN3270 emulator applet, this hostname must match the hostname that was used to deliver the applet in order to satisfy Java Applet sandbox security conditions.
+@end deffn
+
+@deffn Config sessionServerPort
+The port the SessionServer will listen on.  Note that in the next release (0.2), this will no longer be necessary as all communication will take place through HTTP Tunneling.  In the meantime, hosts and clients must ensure that this port is open on their networks for listening and connecting, respectively.
+@end deffn
+
+@deffn Config hostList
+A comma-delimited list of hosts.  These are the hosts that clients will see in their 'Connect' menu.  If the @var{manualEntry} configuration variable is set to 'false', these are the @emph{only} hosts the client will be able to connect to.  Each host entry has the format:
+@example
+<hostname>|<port>|<friendlyname>
+@end example
+where @var{friendlyname} is the name that clients will see in their 'Connect' menu.
+@end deffn
+
+@deffn Config manualEntry
+If set to true, allows users to enter their own hosts as well as select from the hosts specified in @var{hostList}
+@end deffn
+
+@deffn Config helpabout
+String that will appear in the TN3270 Java Applet's 'help->about' dialog.  Administrators may want to put support contact information here for users.
+@end deffn
+
+@deffn Filtering filterList
+Comma-separated list of ip filters.  Wildcards are allowed
+@example
+127.0.*  The entire class C subnet.
+127.0.0.* The entire class D subnet.
+@end example
+The semantic meaning of these filters is modified by the @var{filterMode} configuation directive.
+@end deffn
+
+@deffn Filtering filterMode
+Specifies behavior of filters in filterList.
+@itemize
+@item 0 = none
+@item 1 = allow from (all hosts specified in filter list)
+@item 2 = disallow from (all hosts @emph{except} specified in filter list)
+@end itemize
+@end deffn
+
+@deffn Admin adminEmail
+The e-mail address of the FreeHost 3270 administrator.  The FreeHost SessionServer will send e-mail to this address according to the email* options below.
+@end deffn
+
+@deffn Admin smtpserver
+The SMTP server to use for sending administrative e-mails
+@end deffn
+
+@deffn Admin emailNotifyXSessionsAreActive
+If > 0, send an email when the SessionServer has this many sessions concurrently active.
+@end deffn
+
+@deffn Admin emailNotifyHostNotResponding
+If true, send an e-mail to @var{adminEmail} if connections to the TN3270 gateway host should fail.
+@end deffn
+
+@node Troubleshooting,  , Configuration, Installation
+@comment  node-name,  next,  previous,  up
+@section Troubleshooting
+If you're having any problems getting FreeHost 3270 to work the way you expect it to, be sure to check the FreeHost 3270 home page at @url{http://freehost3270.sourceforge.net} and the project page at SourceForge: @url{http://sourceforge.net/projects/freehost3270}.  Here you'll find mailing list archives and how to subscribe to the user's mailing list, where you can have your question answered by other FreeHost 3270 users and developers.
+
+In the meantime, here are couple of common problems and their common solutions:
+
+@itemize
+@item @emph{The Java TN3270 applet never shows me the TN3270 connection I'm expecting.}  In order:
+@enumerate
+@item Check to see that the host that the SessionServer servlet is running on can connect to the TN3270 gateway host.
+@item Check to ensure that the sessionServerHost configuration variable in @file{freehost.properties} matches the host you typed in your browser...  The Java Applet Security Manager will only let applets connect to the @emph{same host from which they were served}, so if you have @var{localhost} in your @file{freehost.properties} and you typed in @url{http://www.myserver.org/}, the applet won't be able to connect to the SessionServer servlet.
+@item If the client is behind a firewall, be sure they can connect out on the port specified by @var{sessionServerPort} in @file{freehost.properties}.  Naturally, getting a corporate network lackey to open a port is difficult at best (as it should be).  I've found that you can set the SessionServer port to 443 (the HTTPS port) and succeed in most firewall environments.  Good news, though; in version 0.2, FreeHost 3270 will support HTTP Tunneling (connect back to the SessionServer on port 80, using HTTP headers and HTTP keep-alive), so this won't be an issue for much longer.
+@end enumerate
+@item @emph{I get a burning sensation when I urinate.}  Go see a doctor immediately.  Be prepared to make some embarrassing phone calls.
+@end itemize
+
 @node Licenses,  , Installation, Top
 @comment node-name, next, previous, up
 @appendix Licenses
@@ -672,7 +770,7 @@ Ty Coon, President of Vice
 That's all there is to it!
 
 
-@node GNU Free Documentation License,  , Library Copying, Licenses
+@node GNU Free Documentation License,  , Licenses, Licenses
 @comment node-name, next, previous, up
 @appendixsec GNU Free Documentation License
 
