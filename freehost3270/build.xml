@@ -36,7 +36,7 @@
  <target name="web-classes" depends="prepare">
 	<echo message="Classpath is ${web.classpath}"/>
   <javac srcdir="${src.dir}" destdir="${lib.dir}/WEB-INF/classes"
-    includes="*/**" classpath="${web.classpath}"/>
+    excludes="ActiveSessions.java" includes="*/**" classpath="${web.classpath}"/>
  </target>
  <target name="war" depends="web-classes">
  	<copy file="etc/web.xml" tofile="lib/WEB-INF/web.xml"/>
@@ -47,7 +47,6 @@
     <copy todir="${lib.dir}/Classes">
       <fileset dir="lib/WEB-INF/classes"/>
     </copy>
-    <copy file="fonts/cour.ttf" tofile="${lib.dir}/Classes/cour.ttf"/>
 	<copy todir="lib">
 	  <fileset dir="web"/>
     </copy>
