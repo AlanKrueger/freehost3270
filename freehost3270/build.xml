@@ -6,9 +6,8 @@
   <property name="etc.dir" value="etc"/>
   <property name="lib.dir" value="lib"/>
   <property name="build.dir" value="build"/>
-  <property name="servlet.jar" value="/home/agillesp/src/jakarta-tomcat-3.2.1/lib/servlet.jar"/>
   <property name="web-classes.dest" value="${lib.dir}/WEB-INF/classes"/>
-  <property name="web.classpath" value="${servlet.jar}:${basedir}/thirdparty/jcbwt207T-classes.zip:${basedir}/thirdparty/log4j-core.jar"/>
+  <property name="web.classpath" value="${servlet.jar}:${basedir}/thirdparty/log4j-core.jar"/>
   <property name="pkg-dist.name" value="${name}--pkg"/>
  </target>
 
@@ -26,6 +25,7 @@
  </target>
 
  <target name="prepare" depends="init">
+  <mkdir dir="./doc/api"/>
   <mkdir dir="${lib.dir}"/>
   <mkdir dir="${lib.dir}/Classes"/>
   <mkdir dir="${lib.dir}/WEB-INF/lib"/>
@@ -64,8 +64,8 @@
   </copy>
 </target>
 
-<target name="docs" depends="init">
- <javadoc packagenames="com.rightware.*"
+<target name="docs" depends="prepare">
+ <javadoc packagenames="com.ino.freehost.*"
 		  classpath="${web.classpath}"
 		  sourcepath="./src"
 		  destdir="./doc/api"

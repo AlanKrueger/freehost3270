@@ -22,10 +22,7 @@
   <servlet-class>com.ino.freehost.servlet.RightHost3270</servlet-class>
   <load-on-startup>2</load-on-startup>
  </servlet>
- <servlet-mapping>
-      <servlet-name>freehost3270</servlet-name>
-      <url-pattern>/Admin</url-pattern>
- </servlet-mapping>
+
  <servlet-mapping>
   <servlet-name>freehost</servlet-name>
   <url-pattern>/freehost</url-pattern>
