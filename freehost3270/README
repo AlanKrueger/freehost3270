@@ -1,0 +1,23 @@
+FreeHost 3270 version 0.1 README
+
+REALLY QUICK START
+
+Assuming you already have Java Servlet 2.2 compliant container, copy the freehost3270.war
+file to the container's ./webapps directory.  Most containers will auto-deploy your 
+war... if yours doesn't, you'll need to restart it.
+
+goto http://<wherever your container is>/freehost3270/freehost
+
+You should see the FreeHost3270 Java Emulator pop up and connect to Harvard's HOLLIS server.
+
+Did it work?  Great.  No?  Sorry.  Either way, you should probably have a gander at the documentation in ./docs/freehost.html
+
+
+GETTING SUPPORT
+
+Check out freehost3270-users mailing list at http://freehost3270.sourceforge.net
+
+
+REPORTING BUGS
+
+Please report bugs at http://freehost3270.sourceforge.net  
