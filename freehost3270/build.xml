@@ -1,0 +1,81 @@
+<project name="freehost3270" default="deploy" basedir="/home/agillesp/src/development/freehost3270">
+ <target name="init">
+  <property file="${basedir}/build.properties"/>
+  <property name="name" value="freehost3270"/>
+  <property name="src.dir" value="src"/>
+  <property name="etc.dir" value="etc"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="build.dir" value="build"/>
+  <property name="servlet.jar" value="/home/agillesp/src/jakarta-tomcat-3.2.1/lib/servlet.jar"/>
+  <property name="web-classes.dest" value="${lib.dir}/WEB-INF/classes"/>
+  <property name="web.classpath" value="${servlet.jar}:${basedir}/thirdparty/jcbwt207T-classes.zip:${basedir}/thirdparty/log4j-core.jar"/>
+  <property name="pkg-dist.name" value="${name}--pkg"/>
+ </target>
+
+ <target name="clean" depends="init">
+  <delete>
+	<fileset dir="." defaultexcludes="no">
+	 <patternset> 
+		<include name="**/*~"/>
+	 </patternset>
+    </fileset>
+  </delete>
+
+  <delete dir="${lib.dir}"/>
+  <delete dir="${build.dir}"/>
+ </target>
+
+ <target name="prepare" depends="init">
+  <mkdir dir="${lib.dir}"/>
+  <mkdir dir="${lib.dir}/Classes"/>
+  <mkdir dir="${lib.dir}/WEB-INF/lib"/>
+  <mkdir dir="${lib.dir}/WEB-INF/classes"/>
+  <mkdir dir="${build.dir}"/>
+ </target>
+
+ <target name="web-classes" depends="prepare">
+	<echo message="Classpath is ${web.classpath}"/>
+  <javac srcdir="${src.dir}" destdir="${lib.dir}/WEB-INF/classes"
+    includes="*/**" classpath="${web.classpath}"/>
+ </target>
+ <target name="war" depends="web-classes">
+ 	<copy file="etc/web.xml" tofile="lib/WEB-INF/web.xml"/>
+    <copy file="etc/freehost.properties" tofile="lib/WEB-INF/freehost.properties"/>
+    <copy todir="lib/WEB-INF/lib">
+      <fileset dir="thirdparty"/>
+    </copy>
+    <copy todir="${lib.dir}/Classes">
+      <fileset dir="lib/WEB-INF/classes"/>
+    </copy>
+    <copy file="fonts/cour.ttf" tofile="${lib.dir}/Classes/cour.ttf"/>
+	<copy todir="lib">
+	  <fileset dir="web"/>
+    </copy>
+	<jar jarfile="build/${name}.war"
+		 basedir="lib"/>
+ </target>
+  <target name="deploy" depends="war">
+    <unwar src="${build.dir}/${name}.war" dest="${deploy.dir}/${name}"/>
+    <copy file="${build.dir}/${name}.war" tofile="${deploy.dir}/${name}.war"/>
+ </target>
+<target name="move" depends="init">
+  <echo message="DEPLOY DIRECTORY: ${deploy.dir}"/>
+  <copy todir="${deploy.dir}/${name}">
+   <fileset dir="${basedir}/web/"/>
+  </copy>
+</target>
+
+<target name="docs" depends="init">
+ <javadoc packagenames="com.rightware.*"
+		  classpath="${web.classpath}"
+		  sourcepath="./src"
+		  destdir="./doc/api"
+          author="true"
+          version="true"
+		  overview="src/overview.html"
+          use="true"
+          windowtitle="Freehost3270"
+	      bottom="Copyright &#169; 2001 i-no.com, Inc.  All Rights Reserved"/>
+</target>
+</project>
+

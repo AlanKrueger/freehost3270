@@ -1,0 +1,34 @@
+<web-app>
+ <display-name>freeHost3270</display-name>
+ <description>
+  Free Host 3270.
+ </description>
+<context-param>
+ <param-name>freehost.properties</param-name>
+ <param-value>WEB-INF/freehost.properties</param-value>
+</context-param>
+ <servlet>
+      <servlet-name>freehost3270</servlet-name>
+      <servlet-class>com.ino.freehost.servlet.SessionServer</servlet-class>
+      <load-on-startup>1</load-on-startup>
+      <init-param>
+        <param-name>freehost.properties</param-name>
+        <param-value>WEB-INF/freehost.properties</param-value>
+      </init-param>
+      
+ </servlet>
+ <servlet>
+  <servlet-name>freehost</servlet-name>
+  <servlet-class>com.ino.freehost.servlet.RightHost3270</servlet-class>
+  <load-on-startup>2</load-on-startup>
+ </servlet>
+ <servlet-mapping>
+      <servlet-name>freehost3270</servlet-name>
+      <url-pattern>/Admin</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>freehost</servlet-name>
+  <url-pattern>/freehost</url-pattern>
+ </servlet-mapping>
+
+</web-app>
