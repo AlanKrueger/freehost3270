@@ -1,5 +1,20 @@
 FreeHost 3270 version 0.1 README
 
+What works:
+
+The TN3270 Emulator applet, the SessionServer servlet, and the RightHost3270 servlet (the one that delivers the emulator applet), all seem to work ok.
+
+What doesn't work: (Developers, please feel free to jump in...)
+
+* Print - There's a print option in the File menu of the applet... this opens a new browser window, but doesn't do anything... it 'should' post the contents of the current screen back to a PrintServlet, so the user can print using his browser.  STATUS:  Fixed in next release
+
+* HTML 'Screen Scrape' - The source is in the tree, but the distribution doesn't have it enabled.  STATUS:  Tested and enabled in next release.
+
+* Encryption - Stripped out commercial encryption libraries for release under LGPL.  STATUS:  Fixed in a future release.
+
+* Load Balancing - Removed.  STATUS:  Gone forever unless I'm convinced that enough users want it.
+
+
 REALLY QUICK START
 
 Assuming you already have Java Servlet 2.2 compliant container, copy the freehost3270.war
@@ -16,7 +31,7 @@ Did it work?  Great.  No?  Sorry.  Either way, you should probably have a gander
 GETTING SUPPORT
 
 Check out freehost3270-users mailing list at http://freehost3270.sourceforge.net
-
+If you're not keen on hacking at this, paid support/customization/consultation is available from the author.  Please contact agillesp@i-no.com.
 
 REPORTING BUGS
 
