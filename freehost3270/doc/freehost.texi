@@ -130,7 +130,7 @@ The port the SessionServer will listen on.  Note that in the next release (0.2),
 @end deffn
 
 @deffn Config hostList
-A comma-delimited list of hosts.  These are the hosts that clients will see in their 'Connect' menu.  If the @var{manualEntry} configuration variable is set to 'false', these are the @emph{only} hosts the client will be able to connect to.  Each host entry has the format:
+A pipe-delimited list of hosts.  These are the hosts that clients will see in their 'Connect' menu.  If the @var{manualEntry} configuration variable is set to 'false', these are the @emph{only} hosts the client will be able to connect to.  Each host entry has the format:
 @example
 <hostname>|<port>|<friendlyname>
 @end example
