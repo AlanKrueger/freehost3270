@@ -75,17 +75,17 @@ class RHTest extends Frame implements Runnable
         setResizable(false);
         //setBackground(Color.black);
 	//InputStream is = getClass().getResourceAsStream("cour.ttf");
-	GraphicsEnvironment gre = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	Font[] allfonts = gre.getAllFonts();
-	for ( int i = 0; i < allfonts.length; i++ ) {
-	    System.out.println("FONT: " + allfonts[i].getName());
-	    if ( allfonts[i].getName().equals("OCR A Extended")) {
-		basefont = allfonts[i];
-	    } // end of if ()
-	    
-	} // end of for ()
-	f = basefont.deriveFont(Font.PLAIN, 12);
-	System.out.println("FONT: " + f.getName());
+	//GraphicsEnvironment gre = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	//Font[] allfonts = gre.getAllFonts();
+	//for ( int i = 0; i < allfonts.length; i++ ) {
+	//    System.out.println("FONT: " + allfonts[i].getName());
+	//    if ( allfonts[i].getName().equals("OCR A Extended")) {
+	//	basefont = allfonts[i];
+	//    } // end of if ()
+	//    
+	//} // end of for ()
+	f = new Font("Monospaced", Font.PLAIN, 12);
+	//System.out.println("FONT: " + f.getName());
 
         setLayout(new BorderLayout());
         menubar = new MenuBar();
@@ -412,8 +412,7 @@ class RHPanel extends Panel implements Runnable, RWTnAction
       cursorColor    = Color.red;
       boldColor = Color.white;
       setBackground(defaultBGColor);
-      basefont = new Font("Lucida Sans Typewriter Regular", Font.PLAIN, 12);
-      font = basefont.deriveFont(12);
+      font = new Font("Monospaced", Font.PLAIN, 12);
       fm = Toolkit.getDefaultToolkit().getFontMetrics(font);
       x = fm.charWidth(' ');
       y = fm.getHeight();
