@@ -74,7 +74,7 @@ class RHTest extends Frame implements Runnable
         this.host = host;
         setResizable(false);
         //setBackground(Color.black);
-	InputStream is = getClass().getResourceAsStream("cour.ttf");
+	//InputStream is = getClass().getResourceAsStream("cour.ttf");
 	GraphicsEnvironment gre = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	Font[] allfonts = gre.getAllFonts();
 	for ( int i = 0; i < allfonts.length; i++ ) {
