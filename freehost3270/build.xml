@@ -25,7 +25,6 @@
  </target>
 
  <target name="prepare" depends="init">
-  <mkdir dir="./doc/api"/>
   <mkdir dir="${lib.dir}"/>
   <mkdir dir="${lib.dir}/Classes"/>
   <mkdir dir="${lib.dir}/WEB-INF/lib"/>
@@ -36,7 +35,7 @@
  <target name="web-classes" depends="prepare">
 	<echo message="Classpath is ${web.classpath}"/>
   <javac srcdir="${src.dir}" destdir="${lib.dir}/WEB-INF/classes"
-    excludes="ActiveSessions.java" includes="*/**" classpath="${web.classpath}"/>
+    excludes="com/ino/freehost/html3270/**" includes="*/**" classpath="${web.classpath}"/>
  </target>
  <target name="war" depends="web-classes">
  	<copy file="etc/web.xml" tofile="lib/WEB-INF/web.xml"/>
