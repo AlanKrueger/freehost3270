@@ -584,10 +584,10 @@ public class RWTn3270StreamParser
       dataOut[byteCount++] = rw.getAID();
       switch(rw.getAID())
       {
-      case rw.PA1:
-      case rw.PA2:
-      case rw.PA3:
-      case rw.CLEAR:
+      case RW3270.PA1:
+      case RW3270.PA2:
+      case RW3270.PA3:
+      case RW3270.CLEAR:
          try
          {
             rw.getTelnet().sendData(dataOut, byteCount);
