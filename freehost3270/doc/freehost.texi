@@ -30,15 +30,15 @@ Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1
 or any later version published by the Free Software Foundation;
 with no Invariant Sections, with no Front-Cover Texts, and with no 
-Back-Cover Texts.  A copy of the license is included in the section entitled 
-"GNU Free Documentation License".
+Back-Cover Texts.  A copy of the license is included in the Licenses 
+appendix.
 
 @end titlepage
 
 
 @ifnottex
 
-@node Top, Licenses, (dir), (dir)
+@node Top, Overview, (dir), (dir)
 @comment node-name, next, previous, up
 @top FreeHost 3270
 
@@ -48,21 +48,64 @@ documentation, please visit http://freehost3270.sourceforge.net
 @end ifnottex
 
 @menu
-* GNU Free Documentation License::  Steal this manual, please.
+* Overview::                    
+* Installation::                
+* Licenses::                    
+
+Licenses
 
 
 @end menu
 
-@node Overview, , ,
+@node Overview, Installation, Top, Top
 @comment  node-name,  next,  previous,  up
 @chapter Overview
-Blickety Black.  Don't talk back.
 
-@node Licenses,  , Top, Top
+@node What is FreeHost 3270?, Architecture, Overview, Overview
+@comment  node-name,  next,  previous,  up
+@section What is FreeHost 3270?
+FreeHost 3270 is a set of Java Servlets and a Java Applet that enable sites to deploy TN3270 applications to multiple clients via the Web (or on an intranet or VPN).  With FreeHost 3270, a single servlet container + web server can deliver TN3270 clients as well as proxied connectivity to a virtually limitless number of users through their browser.   The FreeHost 3270 client applet was written to be compatible with the earliest Java implementations and does not require that users download the Java 1.2 plugin for VM compatability.
+
+
+@node Architecture,  , What is FreeHost 3270?, Overview
+@comment  node-name,  next,  previous,  up
+@section Architecture
+
+@node Installation, Licenses, Overview, Top
+@comment  node-name,  next,  previous,  up
+@chapter Installation
+
+@node Where to get FreeHost 3270, Installing FreeHost 3270, Installation, Installation
+@comment  node-name,  next,  previous,  up
+@section Where to get FreeHost 3270
+You can always download the latest release of FreeHost 3270 at @url{http://www.sourceforge.net/projects/freehost3270/}
+
+@node Installing FreeHost 3270, Configuration, Where to get FreeHost 3270, Installation
+@comment  node-name,  next,  previous,  up
+@section Installing FreeHost 3270
+
+Installing FreeHost 3270 is so easy, it hurts to think about it.  Simply drop the @file{freehost-version.war} file from the distribution in your Servlet Container's @file{./webapps/} directory.
+
+If your servlet container requires you to restart in order to deploy a new war, do so.
+
+The configuration defaults in the distrubition are sensible enough that you should be able to test your FreeHost 3270 installation now.  Open your favorite browser and point it at whatever url makes sense in your environment:
+
+@url{http://localhost:8080/freehost3270/freehost}
+
+The FreeHost TN3270 Emulator should pop up and connect to Harvard's HOLLIS information system.  (Assuming your host is connected to the web and is able to get out on port 23.)
+
+@node Configuration,  , Installing FreeHost 3270, Installation
+@comment  node-name,  next,  previous,  up
+@section Configuring FreeHost 3270
+FreeHost 3270 is configured through the @file{WEB-INF/freehost.properties} file.  
+@node Licenses,  , Installation, Top
 @comment node-name, next, previous, up
 @appendix Licenses
 
-@node Library Copying
+@node Library Copying, GNU Free Documentation License, Licenses, Licenses
+@menu
+@end menu
+
 @appendixsec GNU LESSER GENERAL PUBLIC LICENSE
 
 @cindex LGPL, Lesser General Public License
@@ -629,7 +672,7 @@ Ty Coon, President of Vice
 That's all there is to it!
 
 
-@node GNU Free Documentation License,  , Appendix A: Licenses, Appendix A: Licenses
+@node GNU Free Documentation License,  , Library Copying, Licenses
 @comment node-name, next, previous, up
 @appendixsec GNU Free Documentation License
 
