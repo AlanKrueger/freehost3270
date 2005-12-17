@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+
+Applet launcher web application assembly descriptor.
+
+Builds a binary assembly of the project. Dependency
+jars (required by the applet) are copied to the top level
+directory, so that they are accessible by the web browser.
+
+WAR file contents are taken from the build output directory
+and put into the top level archive directory.
+
+It is suggested, that such binary assembly file can be
+exploded into the application's deployment directory in order
+to get a working instance of the application.
+
+-->
+
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <fileSets>
+    <fileSet>
+      <directory>target/freehost3270-web-0.2-CURRENT</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+	<exclude>**/*.jar</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target/freehost3270-web-0.2-CURRENT</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+	<include>**/freehost3270-proxy-*.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <excludes>
+	<exclude>javax.servlet:servlet-api</exclude>
+	<exclude>net.sf.freehost3270:freehost3270-proxy</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+</assembly>

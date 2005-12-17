@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+
+Client to terminal server proxy.
+
+-->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.sf.freehost3270</groupId>
+    <artifactId>freehost3270-suite</artifactId>
+    <version>0.2-CURRENT</version>
+  </parent>
+  <artifactId>freehost3270-proxy</artifactId>
+  <packaging>jar</packaging>
+</project>

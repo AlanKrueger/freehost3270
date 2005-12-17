@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="app/src/main/java"/>
+	<classpathentry kind="src" path="gui/src/main/java"/>
+	<classpathentry kind="src" path="proxy/src/main/java"/>
+	<classpathentry kind="src" path="web/src/main/java"/>
+	<classpathentry kind="src" path="client/src/main/java"/>
+	<classpathentry kind="src" path="applet/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/tomcat/common/lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

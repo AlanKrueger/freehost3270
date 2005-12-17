@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<!DOCTYPE book SYSTEM "/home/agillesp/emacs/dtds/docbook-xml/docbookx.dtd">
+
+<book>
+  
+  <title>FreeHost 3270 Documentation</title>
+  <bookinfo>
+    <address format="linespecific">
+      <street>185 Captain Whitney Road</street>
+      <city>Chester</city><state>MA</state><postcode>01011</postcode>
+      <phone>(413)623-5505</phone>
+    </address>
+    <isbn>1243-12837728</isbn>
+    <author>
+      <firstname>Art</firstname>
+      <surname>Gillespie</surname>
+    </author>
+    <copyright>
+      <year>2001</year>
+      <holder>Art Gillespie</holder>
+    </copyright>
+    <date>2001-04-17</date>
+  </bookinfo>
+  <chapter>
+    
+    <title>Overview</title>
+    
+    <para>In the foo and the bar and the foobar</para>
+    <sect1>
+      <title>A section in the first chapter</title>
+      <para>All I need is a single paragraph of text to 
+      make the section valid.</para>
+      <programlisting format="linespecific" linenumbering="numbered">
+      
+	  </programlisting>
+    </sect1>
+  </chapter>
+  <appendix>
+    <title>Remaining details</title>
+    
+    <para>Although this booklet is quite complete, here I will mention some detail I never got to.
+    </para>
+    <sect1>
+      <title>Use of the word dude</title>
+      <para>Here's an example of how to <emphasis>dude</emphasis>: DUDE.</para>
+    </sect1>
+  </appendix>
+</book>

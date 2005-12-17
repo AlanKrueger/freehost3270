@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- GUI rendering facilities -->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.sf.freehost3270</groupId>
+    <artifactId>freehost3270-suite</artifactId>
+    <version>0.2-CURRENT</version>
+  </parent>
+  <artifactId>freehost3270-gui</artifactId>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.freehost3270</groupId>
+      <artifactId>freehost3270-client</artifactId>
+      <version>0.2-CURRENT</version>
+    </dependency>
+  </dependencies>
+</project>

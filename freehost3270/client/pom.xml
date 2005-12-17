@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.sf.freehost3270</groupId>
+    <artifactId>freehost3270-suite</artifactId>
+    <version>0.2-CURRENT</version>
+  </parent>
+  <artifactId>freehost3270-client</artifactId>
+  <packaging>jar</packaging>
+  <name>Freehost3270 client library</name>
+  <url>http://freehost3270.sourceforge.net</url>
+  <mailingLists>
+    <mailingList>
+      <name>Freehost users</name>
+      <post>freehost3270-users@lists.sourceforge.net</post>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>artgillespie</id>
+      <name>Art Gillespie</name>
+      <roles>
+	<role> Original Author </role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Victor Anyakin</name>
+      <email>anyakin@users.sourceforge.net</email>
+      <roles>
+	<role>Minor fixes</role>
+      </roles>
+    </contributor>
+  </contributors>
+  <licenses>
+    <license>
+      <name>Lesser GPL</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<configuration>
+	  <descriptor>src/main/assembly/bin.xml</descriptor>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-project-info-reports-plugin</artifactId>
+	<reportSets>
+	  <reportSet>
+	    <reports>
+	      <report>project-team</report>
+	      <report>mailing-list</report>
+	      <report>issue-tracking</report>
+	      <report>license</report>
+	      <report>scm</report>
+	    </reports>
+	  </reportSet>
+	</reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  <profiles>
+    <profile>
+      <id>source-assembly</id>
+        <build>
+	  <plugins>
+	    <plugin>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+		<descriptor>src/main/assembly/src.xml</descriptor>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+    </profile>
+  </profiles>
+</project>

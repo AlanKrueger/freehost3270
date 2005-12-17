@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemalocation="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	 version="2.4">
+  
+  <env-entry>
+    <env-entry-name>freehost3270/proxy-port</env-entry-name>
+    <env-entry-value>6728</env-entry-value>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <description>
+      The port number to which the proxy server should bind.
+    </description>
+  </env-entry>
+  
+  <env-entry>
+    <env-entry-name>freehost3270/avail-hosts</env-entry-name>
+    <env-entry-value>pyibm8.cc.telcordia.com|23|PYIBM8</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>
+      A list of available terminal server hosts.
+    </description>
+  </env-entry>
+  
+  <display-name>Freehost3270 applet launcher</display-name>
+  <description>
+    Freehost3270 applet and proxy launcher web application
+  </description>
+
+  <servlet>
+    <servlet-name>ProxyLauncher</servlet-name>
+    <servlet-class>net.sf.freehost3270.web.ProxyLauncherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ProxyLauncher</servlet-name>
+    <url-pattern>/proxy-launcher</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <is-xml>true</is-xml>
+    </jsp-property-group>
+  </jsp-config>
+</web-app>

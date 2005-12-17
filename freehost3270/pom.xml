@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.freehost3270</groupId>
+  <version>0.2-CURRENT</version>
+  <artifactId>freehost3270-suite</artifactId>
+  <packaging>pom</packaging>
+  <name>FreeHost3270 modules suite</name>
+  <modules>
+    <module>client</module>
+    <module>gui</module>
+    <module>app</module>
+    <module>applet</module>
+    <module>proxy</module>
+    <module>web</module>
+  </modules>
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+	  <source>1.4</source>
+	  <target>1.4</target>
+	</configuration>
+      </plugin>
+      <plugin>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<configuration>
+	  <descriptor>src/main/assembly/src.xml</descriptor>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

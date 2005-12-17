@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" text-align="justify" font-size="12pt" font-family="Times Roman">
+<fo:layout-master-set>
+<fo:simple-page-master margin-right="1in" margin-left="10pc" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="blank">
+<fo:region-body margin-top="24pt" margin-bottom="24pt"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-blank"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-blank"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="10pc" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="simple1">
+<fo:region-body margin-top="24pt" margin-bottom="24pt"/>
+<fo:region-before extent="12pt"/>
+<fo:region-after extent="12pt"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="10pc" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="left1">
+<fo:region-body margin-top="24pt" margin-bottom="24pt"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-left"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-left"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="10pc" margin-left="1in" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="right1">
+<fo:region-body margin-top="24pt" margin-bottom="24pt"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-right"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-right"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="1in" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="first1">
+<fo:region-body margin-top="24pt" margin-bottom="24pt"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-first"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-first"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="10pc" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="simple2">
+<fo:region-body margin-top="24pt" margin-bottom="24pt" column-count="1"/>
+<fo:region-before extent="12pt"/>
+<fo:region-after extent="12pt"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="10pc" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="left2">
+<fo:region-body margin-top="24pt" margin-bottom="24pt" column-count="1"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-left"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-left"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="10pc" margin-left="1in" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="right2">
+<fo:region-body margin-top="24pt" margin-bottom="24pt" column-count="1"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-right"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-right"/>
+</fo:simple-page-master>
+<fo:simple-page-master margin-right="1in" margin-left="1in" margin-bottom="1in" margin-top="1in" page-height="11in" page-width="8.5in" master-name="first2">
+<fo:region-body margin-top="24pt" margin-bottom="24pt" column-count="1"/>
+<fo:region-before extent="12pt" region-name="xsl-region-before-first"/>
+<fo:region-after extent="12pt" region-name="xsl-region-after-first"/>
+</fo:simple-page-master>
+<fo:page-sequence-master master-name="titlepage1">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference master-name="first1"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+<fo:page-sequence-master master-name="oneside1">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference master-name="simple1"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+<fo:page-sequence-master master-name="twoside1">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference blank-or-not-blank="blank" master-name="blank"/>
+<fo:conditional-page-master-reference odd-or-even="odd" master-name="right1"/>
+<fo:conditional-page-master-reference odd-or-even="even" master-name="left1"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+<fo:page-sequence-master master-name="titlepage2">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference master-name="first2"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+<fo:page-sequence-master master-name="oneside2">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference master-name="simple2"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+<fo:page-sequence-master master-name="twoside2">
+<fo:repeatable-page-master-alternatives>
+<fo:conditional-page-master-reference blank-or-not-blank="blank" master-name="blank"/>
+<fo:conditional-page-master-reference odd-or-even="odd" master-name="right2"/>
+<fo:conditional-page-master-reference odd-or-even="even" master-name="left2"/>
+</fo:repeatable-page-master-alternatives>
+</fo:page-sequence-master>
+</fo:layout-master-set>
+<fo:page-sequence master-name="titlepage1" hyphenate="true" id="NA22" language="en">
+<fo:flow flow-name="xsl-region-body">
+<fo:block>
+<fo:block font-family="Helvetica" font-weight="bold" font-size="24.8832pt" text-align="center" space-before="18.6624pt">
+<fo:block>FreeHost 3270 Documentation</fo:block>
+</fo:block>
+<fo:block font-family="Helvetica" font-weight="bold" font-size="17.28pt" text-align="center" keep-with-next="always" space-before="10.8pt">Art Gillespie</fo:block>
+<fo:block break-after="page"/>
+<fo:block font-size="14.4pt" font-family="Helvetica" font-weight="bold">
+<fo:block>FreeHost 3270 Documentation</fo:block>
+</fo:block>
+<fo:block font-size="10pt">
+<fo:block>by Art Gillespie</fo:block>
+</fo:block>
+<fo:block font-size="10pt">Copyright © 2001 by Art Gillespie</fo:block>
+<fo:block break-after="page"/>
+</fo:block>
+</fo:flow>
+</fo:page-sequence>
+<fo:page-sequence master-name="titlepage1" format="i" hyphenate="true" language="en">
+<fo:flow flow-name="xsl-region-body">
+<fo:block>
+<fo:block>
+<fo:block font-family="Helvetica" font-weight="bold" font-size="17.28pt" margin-left="-4pc" space-after="1em">Table of Contents</fo:block>
+</fo:block>
+<fo:block>1.Overview<fo:leader text-align-last="justify" leader-pattern="dots"/>
+<fo:page-number-citation ref-id="NA44"/>
+</fo:block>
+<fo:block start-indent="2pc">
+<fo:block>A section in the first chapter<fo:leader text-align-last="justify" leader-pattern="dots"/>
+<fo:page-number-citation ref-id="NA49"/>
+</fo:block>
+</fo:block>
+<fo:block>A.Remaining details<fo:leader text-align-last="justify" leader-pattern="dots"/>
+<fo:page-number-citation ref-id="NA52"/>
+</fo:block>
+<fo:block start-indent="2pc">
+<fo:block>Use of the word dude<fo:leader text-align-last="justify" leader-pattern="dots"/>
+<fo:page-number-citation ref-id="NA57"/>
+</fo:block>
+</fo:block>
+</fo:block>
+</fo:flow>
+</fo:page-sequence>
+<fo:page-sequence master-name="oneside1" hyphenate="true" id="NA44" language="en" initial-page-number="1">
+<fo:static-content flow-name="xsl-region-before">
+<fo:block text-align="center">
+<fo:block xmlns:fo="http://www.w3.org/1999/XSL/Format" font-size="10pt">1. Overview</fo:block>
+</fo:block>
+</fo:static-content>
+<fo:static-content flow-name="xsl-region-after">
+<fo:block font-size="10pt" text-align="center">
+<fo:page-number xmlns:fo="http://www.w3.org/1999/XSL/Format"/>
+</fo:block>
+</fo:static-content>
+<fo:flow flow-name="xsl-region-body">
+<fo:block>
+<fo:block font-family="Helvetica" font-weight="bold" font-size="17.28pt" margin-left="-4pc">
+<fo:block>Chapter 1. Overview</fo:block>
+</fo:block>
+</fo:block>
+<fo:block space-before.optimum="1em" space-before.minimum="0.8em" space-before.maximum="1.2em">In the foo and the bar and the foobar</fo:block>
+<fo:block id="NA49">
+<fo:block>
+<fo:block font-family="Helvetica" margin-left="-4pc">
+<fo:block keep-with-next="always">
+<fo:block space-before.maximum="2em" space-before.optimum="1.5em" space-before.minimum="1em" font-weight="bold" font-size="16pt">A section in the first chapter</fo:block>
+</fo:block>
+</fo:block>
+</fo:block>
+<fo:block space-before.optimum="1em" space-before.minimum="0.8em" space-before.maximum="1.2em">All I need is a single paragraph of text to 
+      make the section valid.</fo:block>
+<fo:block space-before.maximum="1.2em" space-before.optimum="1em" space-before.minimum="0.8em" font-family="Courier" linefeed-treatment="preserve" white-space-collapse="false" text-align="start" wrap-option="no-wrap">
+      
+	  </fo:block>
+</fo:block>
+</fo:flow>
+</fo:page-sequence>
+<fo:page-sequence master-name="oneside1" hyphenate="true" id="NA52" language="en">
+<fo:static-content flow-name="xsl-region-before">
+<fo:block text-align="center">
+<fo:block xmlns:fo="http://www.w3.org/1999/XSL/Format" font-size="10pt">A. Remaining details</fo:block>
+</fo:block>
+</fo:static-content>
+<fo:static-content flow-name="xsl-region-after">
+<fo:block font-size="10pt" text-align="center">
+<fo:page-number xmlns:fo="http://www.w3.org/1999/XSL/Format"/>
+</fo:block>
+</fo:static-content>
+<fo:flow flow-name="xsl-region-body">
+<fo:block>
+<fo:block font-family="Helvetica" font-weight="bold" font-size="17.28pt" margin-left="-4pc">
+<fo:block>Appendix A. Remaining details</fo:block>
+</fo:block>
+</fo:block>
+<fo:block space-before.optimum="1em" space-before.minimum="0.8em" space-before.maximum="1.2em">Although this booklet is quite complete, here I will mention some detail I never got to.
+    </fo:block>
+<fo:block id="NA57">
+<fo:block>
+<fo:block font-family="Helvetica" margin-left="-4pc">
+<fo:block keep-with-next="always">
+<fo:block space-before.maximum="2em" space-before.optimum="1.5em" space-before.minimum="1em" font-weight="bold" font-size="16pt">Use of the word dude</fo:block>
+</fo:block>
+</fo:block>
+</fo:block>
+<fo:block space-before.optimum="1em" space-before.minimum="0.8em" space-before.maximum="1.2em">Here's an example of how to <fo:inline font-style="italic">dude</fo:inline>: DUDE.</fo:block>
+</fo:block>
+</fo:flow>
+</fo:page-sequence>
+</fo:root>
