@@ -46,6 +46,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.Math;
 
 import java.util.Enumeration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -123,19 +124,19 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
     // paint the components of the screen.
     private Graphics2D frame;
     private RW3270 rw;
-    private String StrMessage;
 
     /** Current status message. */
     private String statusMessage;
+    private String strMessage;
     private boolean messageOnScreen;
     private boolean tooManyConnections;
-    private int ascent;
-    private int cols;
+    private int char_ascent;
+    private int char_height;
+    private int char_width;
     private int fontsize = DEFAULT_FONT_SIZE;
     private int messageNumber;
-    private int rows;
-    private int x;
-    private int y;
+    private int screen_cols;
+    private int screen_rows;
 
     public JTerminalScreen() {
         super();
@@ -169,10 +170,10 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
 
     public void broadcastMessage(String msg) {
         log.fine("broadcast message: " + msg);
-        StrMessage = msg;
+        strMessage = msg;
 
         if (msg.indexOf("<too many connections>") != -1) {
-            StrMessage = msg.substring(23);
+            strMessage = msg.substring(23);
             tooManyConnections = true;
         }
 
@@ -620,8 +621,8 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
             double dy = e.getY() - MARGIN_TOP;
 
             if ((dx >= 0) && (dy >= 0)) {
-                int newpos = (((int) Math.floor(dx / x)) +
-                    ((int) Math.floor(dy / y) * 80)) - 1;
+                int newpos = (((int) Math.floor(dx / char_width)) +
+                    ((int) Math.floor(dy / char_height) * 80)) - 1;
 
                 if (newpos >= 0) {
                     rw.setCursorPosition((short) (newpos));
@@ -637,26 +638,31 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         //System.out.println(rw.getCols() + " = " + rw.getCols());
         frame.setFont(font);
         frame.setColor(cursorColor);
-        frame.fillRect(((pos % rw.getCols()) * x) + (x + 5),
-            ((pos / rw.getCols()) * y) + 6, x, y - 1);
+        frame.fillRect(((pos % rw.getCols()) * char_width) + (char_width + 5),
+            ((pos / rw.getCols()) * char_height) + 6, char_width,
+            char_height - 1);
         frame.setColor(Color.black);
 
         byte[] c = { (byte) rw.getChar(pos).getDisplayChar() };
-        frame.drawBytes(c, 0, 1, ((pos % rw.getCols()) * x) + (x + 5),
-            ((pos / rw.getCols()) * y) + ascent + 5);
+        frame.drawBytes(c, 0, 1,
+            ((pos % rw.getCols()) * char_width) + (char_width + 5),
+            ((pos / rw.getCols()) * char_height) + char_ascent + 5);
     }
 
     public void paintStatus() {
         frame.setColor(Color.red);
-        frame.drawLine(x + 5, ((rw.getRows()) * y) + ascent,
-            (rw.getCols() * x) + x + 5, ((rw.getRows()) * y) + ascent);
+        frame.drawLine(char_width + 5,
+            ((rw.getRows()) * char_height) + char_ascent,
+            (rw.getCols() * char_width) + char_width + 5,
+            ((rw.getRows()) * char_height) + char_ascent);
         frame.setColor(currentBGColor);
-        frame.fillRect(x + 5, (rw.getRows() + 1) * y, (rw.getCols()) * x, y);
+        frame.fillRect(char_width + 5, (rw.getRows() + 1) * char_height,
+            (rw.getCols()) * char_width, char_height);
         frame.setColor(currentFGColor);
 
         if (statusMessage != null) {
-            frame.drawString(statusMessage, x + 5,
-                ((rw.getRows()) * y) + y + ascent);
+            frame.drawString(statusMessage, char_width + 5,
+                ((rw.getRows()) * char_height) + char_height + char_ascent);
         }
     }
 
@@ -672,21 +678,23 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         frame.fillRect(3, 3, getSize().width - 6, getSize().height - 6);
 
         switch (messageNumber) {
-        case MSG_CLOSED_REMOTE:
+        case MSG_CLOSED_REMOTE: {
             message = "Your connection to the FreeHost 3270 Session Server was lost or could not be established. " +
                 "Please try your session again, and contact your system administrator if the problem persists.";
 
             break;
+        }
 
         case MSG_STRING:
         case MSG_BROADCAST:
-            message = StrMessage;
+            message = strMessage;
 
             break;
         }
 
         frame.setColor(Color.red);
-        frame.draw3DRect(5 + (x * 20), y * 2, x * 40, x * 40, true);
+        frame.draw3DRect(5 + (char_width * 20), char_height * 2,
+            char_width * 40, char_width * 40, true);
         frame.setColor(Color.white);
         frame.setFont(new Font("Helvetica", Font.PLAIN, fontsize));
 
@@ -694,21 +702,21 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         // varying length and therefore had to be able to auto-wrap on
         // whitespace
         if (message.length() <= 40) {
-            frame.drawString(message, x * 22, y * 3);
+            frame.drawString(message, char_width * 22, char_height * 3);
         } else {
             int lineNo = 0;
 
             for (int i = 0; i < message.length(); i++) {
                 if ((message.length() - i) <= 45) {
                     frame.drawString(message.substring(i, message.length()),
-                        x * 22, y * (3 + lineNo));
+                        char_width * 22, char_height * (3 + lineNo));
 
                     break;
                 } else {
                     String line = message.substring(i, i + 45);
                     int lastSpace = line.lastIndexOf(' ');
                     frame.drawString(message.substring(i, i + lastSpace),
-                        x * 22, y * (3 + lineNo));
+                        char_width * 22, char_height * (3 + lineNo));
                     i = i + lastSpace;
                     lineNo++;
                 }
@@ -718,10 +726,10 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         if ((messageNumber == MSG_BROADCAST) && (tooManyConnections == false)) {
             frame.setFont(new Font("Helvetica", Font.BOLD, fontsize));
             frame.drawString("Message From Your System Administrator:",
-                x * 22, (y * 2) - 5);
+                char_width * 22, (char_height * 2) - 5);
             frame.setFont(new Font("Helvetica", Font.PLAIN, fontsize - 2));
-            frame.drawString("Press <ESC> to return to your session.", x * 22,
-                y * 19);
+            frame.drawString("Press <ESC> to return to your session.",
+                char_width * 22, char_height * 19);
         }
     }
 
@@ -754,7 +762,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         //t = new Thread(this);
         //t.start();
         frame.setColor(currentBGColor);
-        frame.fillRect(0, 0, x * 85, (y * 25) - 4);
+        frame.fillRect(0, 0, char_width * 85, (char_height * 25) - 4);
 
         try {
             frame.setFont(font);
@@ -873,19 +881,24 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         if (frame != null) {
             FontRenderContext context = frame.getFontRenderContext();
             Rectangle2D bound = font.getStringBounds("M", context);
-            x = (int) Math.round(bound.getWidth());
-            y = (int) Math.round(bound.getHeight());
-            ascent = Math.round(font.getLineMetrics("M", context).getAscent());
+            char_width = (int) Math.round(bound.getWidth());
+            char_height = (int) Math.round(bound.getHeight());
+            char_ascent = Math.round(font.getLineMetrics("M", context)
+                                         .getAscent());
 
             //int width = x * 85;
-            int width = x * 85;
-            int height = (y * 30) + 7;
+            int width = char_width * 85;
+            int height = (char_height * 30) + 7;
             setSize(width, height);
             setPreferredSize(new Dimension(width, height));
             frameBuff = new BufferedImage(width, height,
                     BufferedImage.TYPE_INT_RGB);
             frame = frameBuff.createGraphics();
-            log.fine("font metrics: " + x + " ; " + y);
+
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("font metrics: " + char_width + " ; " + char_height);
+            }
+
             renderScreen();
             repaint();
         }
@@ -916,29 +929,34 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
     }
 
     public void setWindowMessage(String msg) {
-        StrMessage = msg;
+        strMessage = msg;
         paintWindowMessage();
         repaint();
     }
 
     public void status(int status) {
         switch (status) {
-        case RWTnAction.X_WAIT:
+        case RWTnAction.X_WAIT: {
             setStatus("X-WAIT");
 
             break;
+        }
 
-        case RWTnAction.READY:
+        case RWTnAction.READY: {
             setStatus("Ready");
 
             break;
+        }
 
-        case RWTnAction.DISCONNECTED_BY_REMOTE_HOST:
-
-            //System.out.println("status called...");
+        case RWTnAction.DISCONNECTED_BY_REMOTE_HOST: {
             setWindowMessage(MSG_CLOSED_REMOTE);
 
-            //paintWindowMessage();
+            break;
+        }
+
+        default:
+            log.warning("status with id: " + status +
+                " is not supported by JTerminalScreen");
         }
     }
 
@@ -957,8 +975,9 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
 
         if (c.isStartField()) {
             frame.setColor(currentBGColor);
-            frame.fillRect(((pos % rw.getCols()) * x) + (x + 5),
-                ((pos / rw.getCols()) * y) + 6, x, y - 1);
+            frame.fillRect(((pos % rw.getCols()) * char_width) +
+                (char_width + 5), ((pos / rw.getCols()) * char_height) + 6,
+                char_width, char_height - 1);
 
             return;
         }
@@ -1003,8 +1022,9 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         //System.out.println("Print data..." + ca[0] + " pos: " + pos + " bgcolor: " + bgcolor);
         //we have to draw the background
         frame.setColor(bgcolor);
-        frame.fillRect(((pos % rw.getCols()) * x) + (x + 5),
-            ((pos / rw.getCols()) * y) + 6, x, y - 1);
+        frame.fillRect(((pos % rw.getCols()) * char_width) + (char_width + 5),
+            ((pos / rw.getCols()) * char_height) + 6, char_width,
+            char_height - 1);
 
         paintData(ca, 1, pos, bgcolor, fgcolor, underscore, hidden);
     }
@@ -1070,22 +1090,24 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
 
         // now let's draw the first row:
         frame.setColor(bgcolor);
-        frame.fillRect(((firstRowStart + 1) * x) + (x + 5),
-            (firstRow * y) + 7, (firstRowLen - 1) * x, y - 2);
+        frame.fillRect(((firstRowStart + 1) * char_width) + (char_width + 5),
+            (firstRow * char_height) + 7, (firstRowLen - 1) * char_width,
+            char_height - 2);
         frame.setColor(fgcolor);
 
         // draw the underline, if appropriate
         if (under) {
-            frame.drawLine(((firstRowStart + 1) * x) + (x + 5),
-                (firstRow * y) + 5 + y,
-                ((firstRowLen + firstRowStart) * x) + (x + 5),
-                (firstRow * y) + 5 + y);
+            frame.drawLine(((firstRowStart + 1) * char_width) +
+                (char_width + 5), (firstRow * char_height) + 5 + char_height,
+                ((firstRowLen + firstRowStart) * char_width) +
+                (char_width + 5), (firstRow * char_height) + 5 + char_height);
         }
 
         /*if(hidden)
            g.setColor(bgcolor);*/
         frame.drawBytes(c, counter, firstRowLen,
-            ((firstRowStart) * x) + (x + 5), (firstRow * y) + ascent + 5);
+            ((firstRowStart) * char_width) + (char_width + 5),
+            (firstRow * char_height) + char_ascent + 5);
         counter += firstRowLen;
 
         //System.out.println(counter);
@@ -1094,18 +1116,21 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
             firstRow++;
             firstRow = (firstRow == rw.getRows()) ? 0 : firstRow;
             frame.setColor(bgcolor);
-            frame.fillRect(x + 5, (firstRow * y) + 7, rw.getCols() * x, y + 2);
+            frame.fillRect(char_width + 5, (firstRow * char_height) + 7,
+                rw.getCols() * char_width, char_height + 2);
             frame.setColor(fgcolor);
 
             if (under) {
-                frame.drawLine(x + 5, (firstRow * y) + 5 + y,
-                    (rw.getCols() * x) + 5, (firstRow * y) + 5 + y);
+                frame.drawLine(char_width + 5,
+                    (firstRow * char_height) + 5 + char_height,
+                    (rw.getCols() * char_width) + 5,
+                    (firstRow * char_height) + 5 + char_height);
             }
 
             /*if(hidden)
                g.setColor(bgcolor);*/
-            frame.drawBytes(c, counter, rw.getCols(), x + 5,
-                (firstRow * y) + ascent + 5);
+            frame.drawBytes(c, counter, rw.getCols(), char_width + 5,
+                (firstRow * char_height) + char_ascent + 5);
 
             //System.out.println(x + " " + y);
             counter += rw.getCols();
@@ -1124,18 +1149,21 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
 
         //now draw the last, partial row
         frame.setColor(bgcolor);
-        frame.fillRect(x + 5, (firstRow * y) + 7, (lastRowLen) * x, y + 2);
+        frame.fillRect(char_width + 5, (firstRow * char_height) + 7,
+            (lastRowLen) * char_width, char_height + 2);
         frame.setColor(fgcolor);
 
         if (under) {
-            frame.drawLine(x + 5, (firstRow * y) + 5 + y,
-                ((lastRowLen) * x) + 5, (firstRow * y) + 5 + y);
+            frame.drawLine(char_width + 5,
+                (firstRow * char_height) + 5 + char_height,
+                ((lastRowLen) * char_width) + 5,
+                (firstRow * char_height) + 5 + char_height);
         }
 
         /*if(hidden)
            g.setColor(bgcolor);*/
-        frame.drawBytes(c, counter, lastRowLen, x + 5,
-            (firstRow * y) + ascent + 5);
+        frame.drawBytes(c, counter, lastRowLen, char_width + 5,
+            (firstRow * char_height) + char_ascent + 5);
         log.finest("drawing data complete");
     }
 
@@ -1154,15 +1182,6 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
            }*/
         char[] chars = field.getDisplayChars();
 
-        //int c = f.getBegin();
-        //System.out.println(c + " " + bufLen);
-        /*for(int i = 0; i < bufLen; i++, c++)
-           {
-              if(c == chars.length)
-                 c = 0;
-              ca[i] = chars[c].getDisplayChar();
-              //System.out.print(ca[i]);
-           }*/
         Color fgcolor = translateColor(field.getForegroundColor());
         Color bgcolor = translateColor(field.getBackgroundColor());
         boolean underscore = false;
