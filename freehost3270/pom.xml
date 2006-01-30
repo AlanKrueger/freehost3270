@@ -17,6 +17,9 @@
     <module>proxy</module>
     <module>web</module>
   </modules>
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/freehost3270:freehost3270</connection>
+  </scm>
   <build>
     <plugins>
       <plugin>
