@@ -9,6 +9,12 @@
   <artifactId>freehost3270-suite</artifactId>
   <packaging>pom</packaging>
   <name>FreeHost3270 modules suite</name>
+  <url>http://freehost3270.sourceforge.net</url>
+  <description>
+    FreeHost 3270 is Java Web Application that provides access to
+    TN3270 host applications through a Java TN3270 Emulator Applet or
+    standalone application.
+  </description>
   <modules>
     <module>client</module>
     <module>gui</module>
@@ -17,9 +23,22 @@
     <module>proxy</module>
     <module>web</module>
   </modules>
+  <issueManagement>
+    <system>SourceForge tracker</system>
+    <url>http://sourceforge.net/tracker/?atid=383314&amp;group_id=25062</url>
+  </issueManagement>
   <scm>
     <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/freehost3270:freehost3270</connection>
   </scm>
+  <mailingLists>
+    <mailingList>
+      <name>FreeHost3270 users</name>
+      <subscribe>freehost3270-users@lists.sourceforge.net</subscribe>
+      <unsubscribe>freehost3270-users@lists.sourceforge.net</unsubscribe>
+      <post>freehost3270-users@lists.sourceforge.net</post>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum=freehost3270-users</archive>
+    </mailingList>
+  </mailingLists>
   <build>
     <plugins>
       <plugin>
@@ -38,4 +57,28 @@
       </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-project-info-reports-plugin</artifactId>
+	<reportSets>
+	  <reportSet>
+	    <reports>
+	      <report>project-team</report>
+	      <report>mailing-list</report>
+	      <report>issue-tracking</report>
+	      <!--<report>license</report>-->
+	      <report>scm</report>
+	    </reports>
+	  </reportSet>
+	</reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
 </project>

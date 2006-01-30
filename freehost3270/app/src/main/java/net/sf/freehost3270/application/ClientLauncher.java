@@ -50,6 +50,9 @@ public class ClientLauncher {
     public static final String KEY_SERVERPORT = "net.sf.freehost3270.serverport";
     public static final String KEY_DEFAULTHOST = "net.sf.freehost3270.defaulthost";
 
+  /**
+   * Launches the stand-alone client application.
+   */
     public static void main(String[] args) {
         log.info("launching FreeHost standalone GUI client");
         log.info("with parameters:");
@@ -61,7 +64,12 @@ public class ClientLauncher {
 
         String available = System.getProperty(KEY_AVAILABLE);
         String fhServerName = System.getProperty(KEY_SERVERNAME);
-        int fhServerPort = Integer.parseInt(System.getProperty(KEY_SERVERPORT));
+	int fhServerPort = 23;
+	try {
+	  fhServerPort = Integer.parseInt(System.getProperty(KEY_SERVERPORT));
+	} catch (NumberFormatException e) {
+	  System.err.println(e.getMessage());
+	}
         String fhDefaultHost = System.getProperty(KEY_DEFAULTHOST);
 
         Hashtable hosts = new Hashtable();

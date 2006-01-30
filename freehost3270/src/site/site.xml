@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project name="FreeHost3270">
+  <bannerLeft>
+    <name>FreeHost3270</name>
+    <href>http://freehost3270.sourceforge.net</href>
+  </bannerLeft>
+  <body>
+    <links>
+      <item name="Home" href="index.html"/>
+    </links>
+
+    ${reports}
+  </body>
+</project>
