@@ -25,55 +25,187 @@ package net.sf.freehost3270.application;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
-public class EditHostFrame extends JFrame implements ActionListener {
-    JButton cancel;
-    JButton ok;
-    JTextField host;
-    int response;
+/**
+ * Dialog that serves as a widget to specify connection settings to the host
+ * server.
+ *
+ * @since 0.2
+ */
+public class EditHostFrame extends JDialog implements ActionListener,
+    PropertyChangeListener {
+    private static final String okString = "Ok";
+    private static final String cancelString = "Cancel";
+    private JOptionPane optionPane;
+    private JTextField hostField = new JTextField(10);
+    private JTextField portField = new JTextField(4);
+    private String hostName = "";
+    private int portNumber;
+    private int response;
+    private int result = 0;
 
     public EditHostFrame() {
-        super("Host Connect");
-        response = -1;
-        setLayout(new BorderLayout());
-        add("Center", host = new JTextField());
+        this(null, null, null);
+    }
 
-        JPanel p = new JPanel();
-        p.setLayout(new FlowLayout());
-        p.add(ok = new JButton("OK"));
-        p.add(cancel = new JButton("Cancel"));
-        add("South", p);
-        add("North", new JLabel("Enter a host to connect to:"));
+    /**
+     * Constructs a new edit host connection settings dialog window.
+     *
+     * @param owner DOCUMENT ME!
+     * @param hostName default value for host name. If <code>null</code> none
+     *        is used.
+     * @param portNumber default value for port number. If <code>null</code>
+     *        none is used.
+     */
+    public EditHostFrame(Frame owner, String hostName, Integer portNumber) {
+        super(owner, true);
+
+        setTitle("Edit connection settings");
+
+        Object[] controls = {
+                "Specify target host server:", "Host name", hostField,
+                "Port number", portField
+            };
+
+        Object[] options = { okString, cancelString };
+
+        optionPane = new JOptionPane(controls, JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.YES_NO_OPTION, null, options, options[0]);
+
+        setContentPane(optionPane);
+
+        // Handle window closing event
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent we) {
+                    optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+                }
+            });
+
+        // ensure the Host Name field gets the focus
+        addComponentListener(new ComponentAdapter() {
+                public void componentShown(ComponentEvent ce) {
+                    hostField.requestFocusInWindow();
+                }
+            });
+
+        optionPane.addPropertyChangeListener(this);
+
         pack();
 
+        // center dialog frame on the desktop (root window)
+        Dimension frame_size;
+
+        // center dialog frame on the desktop (root window)
         Dimension screen_size;
-        Dimension dlg;
         screen_size = Toolkit.getDefaultToolkit().getScreenSize();
-        dlg = this.getSize();
-        setLocation((screen_size.width - dlg.width) / 2,
-            (screen_size.height - dlg.height) / 2);
-        setVisible(true);
-        requestFocus();
+        frame_size = this.getSize();
+
+        int offX = (int) frame_size.getWidth();
+        int offY = (int) frame_size.getHeight();
+        setLocation((screen_size.width - offX) / 2,
+            (screen_size.height - offY) / 2);
     }
 
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() instanceof JButton) {
-            if (evt.getActionCommand().equals("OK")) {
-                response = 0;
-                dispose();
-            } else if (evt.getActionCommand().equals("Cancel")) {
-                response = 1;
-                dispose();
+    }
+
+    /**
+     * This method clears the dialog and hides it.
+     */
+    public void clearAndHide() {
+        hostField.setText(null);
+        setVisible(false);
+    }
+
+    /**
+     * Returns host name entered by user.
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getHost() {
+        return hostName;
+    }
+
+    /**
+     * Returns port number entered by user.
+     *
+     * @return DOCUMENT ME!
+     */
+    public int getPort() {
+        return portNumber;
+    }
+
+    /**
+     * Returns the close operation code. Codes are:
+     * 
+     * <ul>
+     * <li>
+     * 0 - closed or cancelled.
+     * </li>
+     * <li>
+     * 1 - successful.
+     * </li>
+     * </ul>
+     * 
+     *
+     * @return the operation code.
+     */
+    public int getResult() {
+        return result;
+    }
+
+    public void propertyChange(PropertyChangeEvent e) {
+        String prop = e.getPropertyName();
+
+        if (isVisible() && (e.getSource() == optionPane) &&
+                (JOptionPane.VALUE_PROPERTY.equals(prop) ||
+                JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
+            Object value = optionPane.getValue();
+
+            if (value == JOptionPane.UNINITIALIZED_VALUE) {
+                // ignore reset
+                return;
+            }
+
+            // Reset the JOptionPane's value.  If you don't do this,
+            // then if the user presses the same button next time, no
+            // property change event will be fired.
+            optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+
+            if (okString.equals(value)) {
+                System.err.println("Done with host: " + hostField.getText());
+
+                // we're done; clear and dismiss the dialog
+                hostName = hostField.getText();
+                portNumber = Integer.parseInt(portField.getText(), 10);
+                result = 1;
+                clearAndHide();
+            } else {
+                System.err.println("Closed or canceled");
+
+                // user closed dialog or clicked cancel
+                result = 0;
+                clearAndHide();
             }
         }
     }

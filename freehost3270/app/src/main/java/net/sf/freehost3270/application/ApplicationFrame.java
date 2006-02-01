@@ -44,19 +44,21 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 
 /**
- * Main application (or applet) frame. TODO:  Implement a paintField(field)
- * and paintChar(RW3270Char) method
+ * Main application frame. TODO: Implement a paintField(field) and
+ * paintChar(RW3270Char) method
  */
 public class ApplicationFrame extends JFrame implements ActionListener,
-    Runnable, FocusListener {
+    FocusListener {
     private static final Logger log = Logger.getLogger(ApplicationFrame.class.getName());
 
     /** These font sizes will be presented to the user. */
@@ -70,282 +72,60 @@ public class ApplicationFrame extends JFrame implements ActionListener,
             Color.ORANGE, Color.CYAN, new Color(0, 51, 102),
             new Color(204, 255, 204)
         };
-    private Font basefont;
-    private Font f;
-    private Hashtable available;
+    private static final boolean encryption = false;
     private JCheckBoxMenuItem showButtons;
     private JMenuBar menubar;
-    private JMenuItem disconnect;
 
     //    private RH3270Buttons rhbuttons;
-    //private Label msg;
     private JTerminalScreen rhp;
-    private String defaulthost;
-    private String helpabout;
+    private Map available;
     private String host;
-    private boolean encryption;
-    private int defaulthostport;
     private int port;
 
-    public ApplicationFrame(String host, int port, String defaulthost,
-        Hashtable h, Component c) {
+    /**
+     * No-ops constructor. Asks users to enter the connection settings in the
+     * corresponding dialog box then proceeds as normal.
+     */
+    public ApplicationFrame() {
+        super("Freehost3270");
+
+        EditHostFrame edhFrame = new EditHostFrame();
+        edhFrame.setVisible(true);
+
+        if (edhFrame.getResult() == 1) {
+            init(edhFrame.getHost(), edhFrame.getPort(), null, null);
+        } else {
+            exit();
+        }
+    }
+
+    public ApplicationFrame(String host, int port, Map available) {
+        this(host, port, available, null);
+    }
+
+    public ApplicationFrame(String host, int port, Map available, JFrame parent) {
         super("FreeHost3270");
-
-        //helpabout = a.getParameter("helpabout");
-
-        //this.defaulthost = defaulthost;
-        encryption = false;
-
-        //System.out.println(helpabout);
-        available = h;
-        this.port = port;
-        this.host = host;
-        setResizable(false);
-
-        basefont = new Font("Monospaced", Font.PLAIN, 12);
-        f = basefont.deriveFont(Font.PLAIN, 12);
-
-        log.fine("FONT: " + f.getName());
-
-        setLayout(new BorderLayout());
-        menubar = new JMenuBar();
-        setJMenuBar(menubar);
-
-        JMenu file = new JMenu("File");
-        file.add(new JMenuItem("Print"));
-        file.addSeparator();
-        file.add(new JMenuItem("New Window"));
-        menubar.add(file);
-
-        JMenu connect = new JMenu("Connect");
-        Enumeration hostKeys = available.keys();
-
-        while (hostKeys.hasMoreElements()) {
-            String hostKey = (String) hostKeys.nextElement();
-            connect.add(new AbstractAction(hostKey) {
-                    public void actionPerformed(ActionEvent evt) {
-                        rhp.disconnect();
-                        rhp.connect(ApplicationFrame.this.host,
-                            ApplicationFrame.this.port,
-                            ((Host) ApplicationFrame.this.available.get(
-                                evt.getActionCommand())).getHostName(),
-                            ((Host) ApplicationFrame.this.available.get(
-                                evt.getActionCommand())).getPort(), encryption);
-                    }
-                });
-        }
-
-        //        if(a.getParameter("manualEntry").equals("true"))
-        //  connect.add(new MenuItem("Other..."));
-        connect.addSeparator();
-        connect.add(disconnect = new JMenuItem("Disconnect"));
-        disconnect.addActionListener(this);
-        menubar.add(connect);
-
-        JMenu options = new JMenu("Options");
-        JMenu fonts = new JMenu("Font Size");
-
-        for (int i = 0; i < FONT_SIZES.length; i++) {
-            int size = FONT_SIZES[i];
-            fonts.add(new AbstractAction(Integer.toString(size, 10)) {
-                    public void actionPerformed(ActionEvent evt) {
-                        int size = Integer.parseInt(evt.getActionCommand(), 10);
-                        fontSize((float) size);
-                    }
-                });
-        }
-
-        options.add(fonts);
-
-        JMenu fontcolor = new JMenu("Font Color");
-        JMenu dfFontColor = new JMenu("Default Font");
-
-        for (int i = 0; i < COLOR_NAMES.length; i++) {
-            String name = COLOR_NAMES[i];
-            dfFontColor.add(new AbstractAction(name) {
-                    public void actionPerformed(ActionEvent evt) {
-                        String name = evt.getActionCommand();
-
-                        for (int idx = 0; idx < COLOR_NAMES.length; idx++) {
-                            if (name.equals(COLOR_NAMES[idx])) {
-                                ApplicationFrame.this.rhp.setForegroundColor(COLOR_VALUES[idx]);
-                            }
-                        }
-                    }
-                });
-        }
-
-        fontcolor.add(dfFontColor);
-
-        JMenu bldFontColor = new JMenu("Bold Font");
-
-        for (int i = 0; i < COLOR_NAMES.length; i++) {
-            String name = COLOR_NAMES[i];
-            bldFontColor.add(new AbstractAction(name) {
-                    public void actionPerformed(ActionEvent evt) {
-                        String name = evt.getActionCommand();
-
-                        for (int idx = 0; idx < COLOR_NAMES.length; idx++) {
-                            if (name.equals(COLOR_NAMES[idx])) {
-                                ApplicationFrame.this.rhp.setBoldColor(COLOR_VALUES[idx]);
-                            }
-                        }
-                    }
-                });
-        }
-
-        fontcolor.add(bldFontColor);
-        options.add(fontcolor);
-        options.addSeparator();
-
-        JMenu bgcolor = new JMenu("Background Color");
-
-        for (int i = 0; i < COLOR_NAMES.length; i++) {
-            String name = COLOR_NAMES[i];
-            bgcolor.add(new AbstractAction(name) {
-                    public void actionPerformed(ActionEvent evt) {
-                        String name = evt.getActionCommand();
-
-                        for (int idx = 0; idx < COLOR_NAMES.length; idx++) {
-                            if (name.equals(COLOR_NAMES[idx])) {
-                                ApplicationFrame.this.rhp.setBackgroundColor(COLOR_VALUES[idx]);
-                            }
-                        }
-                    }
-                });
-        }
-
-        options.add(bgcolor);
-        options.addSeparator();
-        options.add(showButtons = new JCheckBoxMenuItem("Buttons"));
-        menubar.add(options);
-
-        JMenu about = new JMenu("Help");
-        menubar.add(about);
-        about.add(new JMenuItem("About"));
-        rhp = new JTerminalScreen();
-        add("Center", rhp);
-
-        //System.out.println(rhp.size().width + " " + rhp.size().height);
-
-        //Center on screen
-        Dimension screen_size;
-
-        //System.out.println(rhp.size().width + " " + rhp.size().height);
-
-        //Center on screen
-        Dimension frame_size;
-        screen_size = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(rhp.getSize().width + getInsets().top + getInsets().bottom,
-            rhp.getSize().height + getInsets().right + getInsets().left);
-        frame_size = this.getSize();
-
-        int offX = frame_size.width;
-        int offY = frame_size.height;
-
-        // If we have parent component, offset the new window from
-        // it (cascade windows)
-        if (c != null) {
-            setLocation(c.getLocation().x + 20, c.getLocation().y + 20);
-        } else {
-            setLocation((screen_size.width - offX) / 2,
-                (screen_size.height - offY) / 2);
-        }
-
-        if (available.size() == 1) {
-            Enumeration el = available.elements();
-            Host currentHost = (Host) el.nextElement();
-            setTitle("RightHost 3270 - Connecting to " +
-                currentHost.getFriendlyName());
-            rhp.connect(host, port, currentHost.getHostName(),
-                currentHost.getPort(), encryption);
-            requestFocus();
-            setTitle("RightHost 3270 - Connected to " +
-                currentHost.getFriendlyName());
-        } else {
-            setTitle("RightHost 3270 - Not Connected");
-        }
-
-        // setFont(f);
-        addFocusListener(this);
+        init(host, port, available, parent);
     }
 
     public void actionPerformed(ActionEvent evt) {
         log.fine("dispatching action event");
-
-        if (evt.getSource() instanceof JCheckBoxMenuItem) {
-            JCheckBoxMenuItem cmi = (JCheckBoxMenuItem) evt.getSource();
-
-            if (cmi.getState()) {
-                //System.out.println("Buttons checked...");
-                setSize(this.getSize().width, this.getSize().height + 90);
-
-                //RH3270Buttons rhbuttons = new RH3270Buttons(rhp.getRW3270());
-                //add("South", rhbuttons);
-            } else {
-                setSize(this.getSize().width, this.getSize().height - 90);
-                remove(getComponent(1));
-            }
-
-            return;
-        }
-
-        if (evt.getSource() instanceof JMenuItem) {
-            if (evt.getActionCommand().equals("Disconnect")) {
-                setTitle("RightHost 3270 - Disconnected");
-                rhp.disconnect();
-
-                return;
-            }
-
-            if (evt.getActionCommand().equals("Print")) {
-                rhp.print();
-
-                return;
-            }
-
-            if (evt.getActionCommand().equals("New Window")) {
-                ApplicationFrame rht = new ApplicationFrame(host, port,
-                        defaulthost, available, this);
-
-                return;
-            }
-
-            if (evt.getSource() instanceof JMenuItem) {
-                if (((JMenuItem) ((JMenuItem) evt.getSource()).getParent()).getText()
-                         .equals("Connect")) {
-                    rhp.disconnect();
-
-                    if (evt.getActionCommand().equals("Other...")) {
-                        Thread t = new Thread(this);
-
-                        //t.start();
-                        return;
-                    }
-
-                    super.setTitle("RightHost 3270 - Connecting to " +
-                        evt.getActionCommand());
-                    rhp.connect(host, port,
-                        ((Host) available.get(evt.getActionCommand())).getHostName(),
-                        ((Host) available.get(evt.getActionCommand())).getPort(),
-                        encryption);
-                    super.setTitle("RightHost 3270 - Connected to " +
-                        evt.getActionCommand());
-                }
-            }
-
-            if (evt.getActionCommand().equals("About")) {
-                // TODO FIXME
-            }
-
-            return;
-        }
-
-        return;
     }
 
     public void disconnect() {
         rhp.disconnect();
+    }
+
+    /**
+     * Shuts the application down.
+     */
+    public void exit() {
+        if (rhp != null) {
+            rhp.disconnect();
+        }
+
+        dispose();
+        System.exit(0);
     }
 
     public void focusGained(FocusEvent evt) {
@@ -357,10 +137,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
     public void processEvent(AWTEvent evt) {
         if (evt.getID() == Event.WINDOW_DESTROY) {
-            rhp.disconnect();
-            dispose();
-
-            //System.exit(-1);
+            exit();
         }
 
         /*if(evt.id == Event.WINDOW_MOVED)
@@ -381,16 +158,198 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         super.processEvent(evt);
     }
 
-    public void run() {
-        //  otherHost oh = new otherHost();
-        //          while(oh.response < 0){}
-        //          if(oh.response == 0)
-        //          {
-        //              rhp.connect(host, port, oh.host.getText(), Integer.parseInt(oh.port.getText()), encryption);
-        //              setTitle("RightHost 3270 - Connected to " + oh.host.getText());
-        //              repaint();
-        //          }
-        //          oh.response = -1;
+    /**
+     * Builds main menu. Constructs several menu items.
+     */
+    private void buildMainMenu() {
+        menubar = new JMenuBar();
+        setJMenuBar(menubar);
+
+        JMenu file = new JMenu("Terminal");
+
+        //file.add(new JMenuItem("Print"));
+        //file.add(new JMenuItem("New Window"));
+        //file.addSeparator();
+        file.add(new AbstractAction("Exit") {
+                public void actionPerformed(ActionEvent evt) {
+                    ApplicationFrame.this.exit();
+                }
+            });
+        menubar.add(file);
+
+        JMenu connect = new JMenu("Connect");
+
+        Iterator hostKeys = available.keySet().iterator();
+
+        while (hostKeys.hasNext()) {
+            String hostKey = (String) hostKeys.next();
+            connect.add(new AbstractAction(hostKey) {
+                    public void actionPerformed(ActionEvent evt) {
+                        ApplicationFrame.this.disconnect();
+                        rhp.connect(ApplicationFrame.this.host,
+                            ApplicationFrame.this.port,
+                            ((Host) ApplicationFrame.this.available.get(
+                                evt.getActionCommand())).getHostName(),
+                            ((Host) ApplicationFrame.this.available.get(
+                                evt.getActionCommand())).getPort(), encryption);
+                    }
+                });
+        }
+
+        connect.add(new AbstractAction("Other...") {
+                public void actionPerformed(ActionEvent evt) {
+                    EditHostFrame edhFrame = new EditHostFrame();
+                    edhFrame.setVisible(true);
+
+                    if (edhFrame.getResult() == 1) {
+                        ApplicationFrame.this.disconnect();
+                        rhp.connect(edhFrame.getHost(), edhFrame.getPort(),
+                            edhFrame.getHost(), edhFrame.getPort(), encryption);
+                        rhp.requestFocusInWindow();
+                    }
+                }
+            });
+        connect.addSeparator();
+
+        connect.add(new AbstractAction("Disconnect") {
+                public void actionPerformed(ActionEvent evt) {
+                    ApplicationFrame.this.disconnect();
+                }
+            });
+
+        menubar.add(connect);
+
+        JMenu options = new JMenu("Options");
+
+        JMenu fonts = new JMenu("Font Size");
+        ButtonGroup fontsGroup = new ButtonGroup();
+
+        for (int i = 0; i < FONT_SIZES.length; i++) {
+            int size = FONT_SIZES[i];
+
+            JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(new AbstractAction(
+                        Integer.toString(size, 10)) {
+                        public void actionPerformed(ActionEvent evt) {
+                            int size = Integer.parseInt(evt.getActionCommand(),
+                                    10);
+                            fontSize((float) size);
+                        }
+                    });
+
+            if (size == JTerminalScreen.DEFAULT_FONT_SIZE) {
+                sizeItem.setSelected(true);
+            }
+
+            fonts.add(sizeItem);
+            fontsGroup.add(sizeItem);
+        }
+
+        options.add(fonts);
+
+        JMenu fontcolor = new JMenu("Font Color");
+        JMenu dfFontColor = new JMenu("Default Font");
+        ButtonGroup fontColorGroup = new ButtonGroup();
+
+        for (int i = 0; i < COLOR_NAMES.length; i++) {
+            String name = COLOR_NAMES[i];
+            JRadioButtonMenuItem colorItem = new JRadioButtonMenuItem(new AbstractAction(
+                        name) {
+                        public void actionPerformed(ActionEvent evt) {
+                            String name = evt.getActionCommand();
+
+                            for (int idx = 0; idx < COLOR_NAMES.length;
+                                    idx++) {
+                                if (name.equals(COLOR_NAMES[idx])) {
+                                    ApplicationFrame.this.rhp.setForegroundColor(COLOR_VALUES[idx]);
+                                }
+                            }
+                        }
+                    });
+
+            if (COLOR_VALUES[i] == JTerminalScreen.DEFAULT_FG_COLOR) {
+                colorItem.setSelected(true);
+            }
+
+            dfFontColor.add(colorItem);
+            fontColorGroup.add(colorItem);
+        }
+
+        fontcolor.add(dfFontColor);
+
+        JMenu bldFontColor = new JMenu("Bold Font");
+        ButtonGroup bldFontGroup = new ButtonGroup();
+
+        for (int i = 0; i < COLOR_NAMES.length; i++) {
+            String name = COLOR_NAMES[i];
+            JRadioButtonMenuItem colorItem = new JRadioButtonMenuItem(new AbstractAction(
+                        name) {
+                        public void actionPerformed(ActionEvent evt) {
+                            String name = evt.getActionCommand();
+
+                            for (int idx = 0; idx < COLOR_NAMES.length;
+                                    idx++) {
+                                if (name.equals(COLOR_NAMES[idx])) {
+                                    ApplicationFrame.this.rhp.setBoldColor(COLOR_VALUES[idx]);
+                                }
+                            }
+                        }
+                    });
+
+            if (COLOR_VALUES[i] == JTerminalScreen.DEFAULT_BOLD_COLOR) {
+                colorItem.setSelected(true);
+            }
+
+            bldFontColor.add(colorItem);
+            bldFontGroup.add(colorItem);
+        }
+
+        fontcolor.add(bldFontColor);
+        options.add(fontcolor);
+        options.addSeparator();
+
+        JMenu bgcolor = new JMenu("Background Color");
+        ButtonGroup bgcolorGroup = new ButtonGroup();
+
+        for (int i = 0; i < COLOR_NAMES.length; i++) {
+            String name = COLOR_NAMES[i];
+            JRadioButtonMenuItem colorItem = new JRadioButtonMenuItem(new AbstractAction(
+                        name) {
+                        public void actionPerformed(ActionEvent evt) {
+                            String name = evt.getActionCommand();
+
+                            for (int idx = 0; idx < COLOR_NAMES.length;
+                                    idx++) {
+                                if (name.equals(COLOR_NAMES[idx])) {
+                                    ApplicationFrame.this.rhp.setBackgroundColor(COLOR_VALUES[idx]);
+                                }
+                            }
+                        }
+                    });
+
+            if (COLOR_VALUES[i] == JTerminalScreen.DEFAULT_BG_COLOR) {
+                colorItem.setSelected(true);
+            }
+
+            bgcolor.add(colorItem);
+            bgcolorGroup.add(colorItem);
+        }
+
+        options.add(bgcolor);
+
+        //options.addSeparator();
+        //options.add(showButtons = new JCheckBoxMenuItem("Buttons"));
+        menubar.add(options);
+
+        JMenu about = new JMenu("Help");
+        menubar.add(about);
+        about.add(new AbstractAction("About") {
+                public void actionPerformed(ActionEvent evt) {
+                    AboutFrame about = new AboutFrame(ApplicationFrame.this);
+                    about.setVisible(true);
+                }
+            });
+        rhp = new JTerminalScreen();
+        add("Center", rhp);
     }
 
     private void fontSize(float size) {
@@ -398,5 +357,71 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         setSize(rhp.getSize().width + getInsets().top + getInsets().bottom,
             rhp.getSize().height + getInsets().right + getInsets().left);
         repaint();
+    }
+
+    /**
+     * Performs operations neccessary to construct main application frame.
+     *
+     * @param host DOCUMENT ME!
+     * @param port DOCUMENT ME!
+     * @param available DOCUMENT ME!
+     * @param parent DOCUMENT ME!
+     */
+    private void init(String host, int port, Map available, JFrame parent) {
+        if (available == null) {
+            available = new Hashtable();
+            available.put(host, new Host(host, port, host));
+        }
+
+        this.available = available;
+
+        this.port = port;
+        this.host = host;
+        setResizable(false);
+
+        setLayout(new BorderLayout());
+
+        buildMainMenu();
+
+        // Center on screen
+        Dimension screen_size;
+        Dimension frame_size;
+        screen_size = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(rhp.getSize().width + getInsets().top + getInsets().bottom,
+            rhp.getSize().height + getInsets().right + getInsets().left);
+        frame_size = this.getSize();
+
+        int offX = frame_size.width;
+
+        int offY = frame_size.height;
+
+        // If we have parent component, offset the new window from
+        // it (cascade windows)
+        if (parent != null) {
+            setLocation(parent.getLocation().x + 20,
+                parent.getLocation().y + 20);
+        } else {
+            setLocation((screen_size.width - offX) / 2,
+                (screen_size.height - offY) / 2);
+        }
+
+        // Connect to the first host in the set of available hosts in
+        // case if there is only one host available
+        if (available.size() == 1) {
+            Iterator el = available.values().iterator();
+            Host currentHost = (Host) el.next();
+
+            setTitle("RightHost 3270 - Connecting to " +
+                currentHost.getFriendlyName());
+            rhp.connect(host, port, currentHost.getHostName(),
+                currentHost.getPort(), encryption);
+            requestFocus();
+            setTitle("RightHost 3270 - Connected to " +
+                currentHost.getFriendlyName());
+        } else {
+            setTitle("RightHost 3270 - Not Connected");
+        }
+
+        addFocusListener(this);
     }
 }
