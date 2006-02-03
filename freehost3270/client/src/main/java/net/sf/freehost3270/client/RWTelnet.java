@@ -149,7 +149,7 @@ public class RWTelnet implements Runnable {
      * @param port the port number the SessionServer/Host is running on
      * @param host3270 the Hostname or IP address of the 3270Host (if using
      *        SessionServer)
-     * @param port3270 DOCUMENT ME!
+     * @param port3270 port number of the target terminal server.
      */
     protected void connect(String host, int port, String host3270, int port3270) {
         log.fine("connecting to proxy " + host + ":" + port +
@@ -187,8 +187,8 @@ public class RWTelnet implements Runnable {
      * <code>SessionServer</code> relay. added 5/12/98 to facilitate
      * packaging of the 3270 Servlet Developer's Toolkit
      *
-     * @param host DOCUMENT ME!
-     * @param port DOCUMENT ME!
+     * @param host destination server host name.
+     * @param port destination terminal server port number.
      */
     protected void connect(String host, int port) {
         log.info("connecting to " + host + ":" + port);

@@ -187,11 +187,14 @@ public class ApplicationFrame extends JFrame implements ActionListener,
                     public void actionPerformed(ActionEvent evt) {
                         ApplicationFrame.this.disconnect();
                         rhp.connect(ApplicationFrame.this.host,
-                            ApplicationFrame.this.port,
-                            ((Host) ApplicationFrame.this.available.get(
-                                evt.getActionCommand())).getHostName(),
-                            ((Host) ApplicationFrame.this.available.get(
-                                evt.getActionCommand())).getPort(), encryption);
+                            ApplicationFrame.this.port);
+
+                        /*
+                           ((Host) ApplicationFrame.this.available.get(
+                           evt.getActionCommand())).getHostName(),
+                           ((Host) ApplicationFrame.this.available.get(
+                           evt.getActionCommand())).getPort(), encryption);
+                         */
                     }
                 });
         }
@@ -203,8 +206,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
                     if (edhFrame.getResult() == 1) {
                         ApplicationFrame.this.disconnect();
-                        rhp.connect(edhFrame.getHost(), edhFrame.getPort(),
-                            edhFrame.getHost(), edhFrame.getPort(), encryption);
+                        rhp.connect(edhFrame.getHost(), edhFrame.getPort());
                         rhp.requestFocusInWindow();
                     }
                 }
@@ -413,8 +415,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
             setTitle("RightHost 3270 - Connecting to " +
                 currentHost.getFriendlyName());
-            rhp.connect(host, port, currentHost.getHostName(),
-                currentHost.getPort(), encryption);
+            rhp.connect(host, port);
             requestFocus();
             setTitle("RightHost 3270 - Connected to " +
                 currentHost.getFriendlyName());

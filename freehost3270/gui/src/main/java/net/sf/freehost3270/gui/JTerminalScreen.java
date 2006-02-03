@@ -205,6 +205,20 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         log.info("connecting complete");
     }
 
+    public void connect(String host, int port) {
+        if (host == null) {
+            log.warning("called connect with null host");
+
+            return;
+        }
+
+        messageOnScreen = false;
+        log.info("connecting " + host + ":" + port);
+        setStatus("Connecting");
+        rw.connect(host, port);
+        log.info("connecting complete");
+    }
+
     public void cursorMove(int oldPos, int newPos) {
         log.finest("moving cursor: " + oldPos + "->" + newPos);
 
