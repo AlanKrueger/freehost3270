@@ -42,6 +42,10 @@
  */
 package net.sf.freehost3270.client;
 
+import java.io.IOException;
+
+import java.net.UnknownHostException;
+
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -331,8 +335,12 @@ public class RW3270 {
      *
      * @param host The hostname of the TN3270 host to connect to
      * @param port The port on which to connect to the TN3270 host
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws UnknownHostException DOCUMENT ME!
      */
-    public void connect(String host, int port) {
+    public void connect(String host, int port)
+        throws IOException, UnknownHostException {
         tn.setEncryption(false);
         tn.connect(host, port);
     }

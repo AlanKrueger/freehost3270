@@ -189,20 +189,18 @@ public class RWTelnet implements Runnable {
      *
      * @param host destination server host name.
      * @param port destination terminal server port number.
+     *
+     * @throws UnknownHostException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
-    protected void connect(String host, int port) {
+    protected void connect(String host, int port)
+        throws UnknownHostException, IOException {
         log.info("connecting to " + host + ":" + port);
-
-        try {
-            tnSocket = new Socket(host, port);
-            is = tnSocket.getInputStream();
-            os = tnSocket.getOutputStream();
-            sessionThread = new Thread(this);
-            sessionThread.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.severe(e.getMessage());
-        }
+        tnSocket = new Socket(host, port);
+        is = tnSocket.getInputStream();
+        os = tnSocket.getOutputStream();
+        sessionThread = new Thread(this);
+        sessionThread.start();
     }
 
     /**

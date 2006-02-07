@@ -40,10 +40,13 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.lang.Math;
+
+import java.net.UnknownHostException;
 
 import java.util.Enumeration;
 import java.util.logging.Level;
@@ -205,7 +208,8 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
         log.info("connecting complete");
     }
 
-    public void connect(String host, int port) {
+    public void connect(String host, int port)
+        throws IOException, UnknownHostException {
         if (host == null) {
             log.warning("called connect with null host");
 

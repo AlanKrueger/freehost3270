@@ -50,6 +50,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 
@@ -186,15 +187,13 @@ public class ApplicationFrame extends JFrame implements ActionListener,
             connect.add(new AbstractAction(hostKey) {
                     public void actionPerformed(ActionEvent evt) {
                         ApplicationFrame.this.disconnect();
-                        rhp.connect(ApplicationFrame.this.host,
-                            ApplicationFrame.this.port);
 
-                        /*
-                           ((Host) ApplicationFrame.this.available.get(
-                           evt.getActionCommand())).getHostName(),
-                           ((Host) ApplicationFrame.this.available.get(
-                           evt.getActionCommand())).getPort(), encryption);
-                         */
+                        try {
+                            rhp.connect(ApplicationFrame.this.host,
+                                ApplicationFrame.this.port);
+                        } catch (Exception e) {
+                            showConnectionErrorDialog(e.getMessage());
+                        }
                     }
                 });
         }
@@ -206,7 +205,13 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
                     if (edhFrame.getResult() == 1) {
                         ApplicationFrame.this.disconnect();
-                        rhp.connect(edhFrame.getHost(), edhFrame.getPort());
+
+                        try {
+                            rhp.connect(edhFrame.getHost(), edhFrame.getPort());
+                        } catch (Exception e) {
+                            showConnectionErrorDialog(e.getMessage());
+                        }
+
                         rhp.requestFocusInWindow();
                     }
                 }
@@ -415,14 +420,25 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
             setTitle("RightHost 3270 - Connecting to " +
                 currentHost.getFriendlyName());
-            rhp.connect(host, port);
-            requestFocus();
-            setTitle("RightHost 3270 - Connected to " +
-                currentHost.getFriendlyName());
+
+            try {
+                rhp.connect(host, port);
+                requestFocus();
+                setTitle("RightHost 3270 - Connected to " +
+                    currentHost.getFriendlyName());
+            } catch (Exception e) {
+                showConnectionErrorDialog(e.getMessage());
+            }
         } else {
             setTitle("RightHost 3270 - Not Connected");
         }
 
         addFocusListener(this);
+    }
+
+    private void showConnectionErrorDialog(String message) {
+        JOptionPane.showMessageDialog(rhp,
+            "Failed to connect to the server:\n" + message,
+            "Connection failure", JOptionPane.WARNING_MESSAGE);
     }
 }
