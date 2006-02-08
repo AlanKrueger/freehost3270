@@ -7,6 +7,6 @@
 	<classpathentry kind="src" path="client/src/main/java"/>
 	<classpathentry kind="src" path="applet/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/tomcat/common/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="SERVLET_JAR"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
