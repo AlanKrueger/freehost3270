@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
-<!-- Standalone application -->
+<!--
+
+Web bundle.
+
+Generates pages to launch applet, uses proxy to relay
+requests from the applet to the terminal server.
+
+-->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -7,14 +14,15 @@
     <artifactId>freehost3270-suite</artifactId>
     <version>0.2-CURRENT</version>
   </parent>
-  <distributionManagement>
-  <site>
-    <id>website</id>
-    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/web</url>
-  </site>
-</distributionManagement>
   <artifactId>freehost3270-web</artifactId>
+  <name>Freehost3270 web bundle</name>
   <packaging>war</packaging>
+  <distributionManagement>
+    <site>
+      <id>website</id>
+      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/web</url>
+    </site>
+  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>net.sf.freehost3270</groupId>

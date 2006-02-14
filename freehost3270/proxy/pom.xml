@@ -12,11 +12,12 @@ Client to terminal server proxy.
     <version>0.2-CURRENT</version>
   </parent>
   <artifactId>freehost3270-proxy</artifactId>
+  <name>Freehost3270 relay proxy</name>
   <distributionManagement>
-  <site>
-    <id>website</id>
-    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/proxy</url>
-  </site>
-</distributionManagement>
+    <site>
+      <id>website</id>
+      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/proxy</url>
+    </site>
+  </distributionManagement>
   <packaging>jar</packaging>
 </project>

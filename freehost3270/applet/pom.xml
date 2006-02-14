@@ -8,13 +8,14 @@
     <version>0.2-CURRENT</version>
   </parent>
   <artifactId>freehost3270-applet</artifactId>
+  <name>Freehost3270 applet</name>
   <packaging>jar</packaging>
   <distributionManagement>
-  <site>
-    <id>website</id>
-    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/applet/</url>
-  </site>
-</distributionManagement>
+    <site>
+      <id>website</id>
+      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/applet/</url>
+    </site>
+  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>net.sf.freehost3270</groupId>

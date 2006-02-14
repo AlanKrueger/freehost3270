@@ -8,6 +8,7 @@
     <version>0.2-CURRENT</version>
   </parent>
   <artifactId>freehost3270-gui</artifactId>
+  <name>Freehost3270 terminal canvas</name>
   <packaging>jar</packaging>
   <distributionManagement>
   <site>
