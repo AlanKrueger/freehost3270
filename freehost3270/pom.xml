@@ -57,6 +57,12 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+  <site>
+    <id>website</id>
+    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/</url>
+  </site>
+</distributionManagement>
   <reporting>
     <plugins>
       <plugin>
@@ -80,5 +86,5 @@
       </plugin>
     </plugins>
   </reporting>
-
+<!-- /home/groups/f/fr/freehost3270/htdocs -->
 </project>

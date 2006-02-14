@@ -10,6 +10,12 @@
   <packaging>jar</packaging>
   <name>Freehost3270 client library</name>
   <url>http://freehost3270.sourceforge.net</url>
+  <distributionManagement>
+  <site>
+    <id>website</id>
+    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/client/</url>
+  </site>
+</distributionManagement>
   <mailingLists>
     <mailingList>
       <name>Freehost users</name>

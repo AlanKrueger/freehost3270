@@ -7,6 +7,12 @@
     <artifactId>freehost3270-suite</artifactId>
     <version>0.2-CURRENT</version>
   </parent>
+  <distributionManagement>
+  <site>
+    <id>website</id>
+    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/web</url>
+  </site>
+</distributionManagement>
   <artifactId>freehost3270-web</artifactId>
   <packaging>war</packaging>
   <dependencies>

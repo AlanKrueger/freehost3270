@@ -9,6 +9,12 @@
   </parent>
   <artifactId>freehost3270-gui</artifactId>
   <packaging>jar</packaging>
+  <distributionManagement>
+  <site>
+    <id>website</id>
+    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/gui/</url>
+  </site>
+</distributionManagement>
   <dependencies>
     <dependency>
       <groupId>net.sf.freehost3270</groupId>
