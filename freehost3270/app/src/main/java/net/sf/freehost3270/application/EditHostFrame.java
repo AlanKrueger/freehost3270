@@ -37,12 +37,15 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.text.NumberFormat;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JFormattedTextField;
 
 
 /**
@@ -56,8 +59,8 @@ public class EditHostFrame extends JDialog implements ActionListener,
     private static final String okString = "Ok";
     private static final String cancelString = "Cancel";
     private JOptionPane optionPane;
-    private JTextField hostField = new JTextField(10);
-    private JTextField portField = new JTextField(4);
+  private JTextField hostField;
+    private JFormattedTextField portField;
     private String hostName = "";
     private int portNumber;
     private int response;
@@ -80,6 +83,10 @@ public class EditHostFrame extends JDialog implements ActionListener,
         super(owner, true);
 
         setTitle("Edit connection settings");
+	
+	hostField = new JTextField(10);
+	portField = new JFormattedTextField(NumberFormat.getIntegerInstance());
+	portField.setColumns(4);
 
         Object[] controls = {
                 "Specify target host server:", "Host name", hostField,
@@ -197,7 +204,8 @@ public class EditHostFrame extends JDialog implements ActionListener,
 
                 // we're done; clear and dismiss the dialog
                 hostName = hostField.getText();
-                portNumber = Integer.parseInt(portField.getText(), 10);
+		Number port = (Number) portField.getValue();
+                portNumber = port.intValue();
                 result = 1;
                 clearAndHide();
             } else {
