@@ -1,0 +1,35 @@
+				 ---
+			  FreeHost3270 suite
+				 ---
+				 ---
+			    21. March 2006
+
+
+  FreeHost3270 is a suite of software modules aimed at providing
+access to 3270 mainframe terminals to Java applications. It consists
+of several modules. The core of the suite is the
+{{{sub/client/index.html}Client}} module. This module a library that
+implements terminal client access routines and is intended to be used
+in other applications.
+
+Features
+
+  Roughtly speaking, the suite provides:
+  
+  * Client API that provides access to 3270 terminals from Java
+applications.
+
+  * Terminal emulation applet. This involves 3270 telnet relay proxy
+and the applet itself.
+
+  * Stand-alone terminal emulation application. This application has
+richer features than the applet.
+
+Obtaining the suite
+
+  Latest releases and milestone builds can be downloaded from the
+project's
+{{{http://sourceforge.net/project/showfiles.php?group_id=25062}download
+area}}. Detailed instructions how to obtain latest project sources from the project's repository are described on {{{source-repository.html}this page}}.
+
+  

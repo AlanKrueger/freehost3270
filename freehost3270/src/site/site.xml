@@ -2,12 +2,19 @@
 <project name="Maven">
   <bannerLeft>
     <name>FreeHost3270</name>
-    <href>http://sourceforge.net/projects/freehost3270</href>
+    <href>http://freehost3270.sourceforge.net/</href>
   </bannerLeft>
   <body>
     <links>
       <item name="Freehost3270" href="http://freehost3270.sourceforge.net/" />
     </links>
+
+    <menu name="Suite">
+      <item name="Introduction" href="index.html"/>
+      <item name="Screenshots" href="http://sourceforge.net/project/screenshots.php?group_id=25062"/>
+      <item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=25062"/>
+      <item name="Project summary" href="http://sourceforge.net/projects/freehost3270/"/>
+    </menu>
     
     <menu name="Subprojects">
       <item name="App" href="sub/app/index.html"/>
