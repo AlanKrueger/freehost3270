@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+  <bannerLeft>
+    <name>FreeHost3270</name>
+    <href>http://freehost3270.sourceforge.net/</href>
+  </bannerLeft>
+  <body>
+    <links>
+      <item name="FreeHost3270 Standalone Application"
+	    href="http://freehost3270.sourceforge.net/sub/app/index.html" />
+    </links>
+
+    <menu name="Application">
+      <item name="Introduction" href="index.html"/>
+      <item name="Installing" href="installing.html"/>
+      <item name="Using" href="using.html"/>
+      <item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=25062"/>
+      <item name="Project summary" href="http://sourceforge.net/projects/freehost3270/"/>
+    </menu>
+    
+    <menu name="Subprojects">
+      <item name="GUI" href="../gui/index.html"/>
+      <item name="Proxy" href="../proxy/index.html" />
+      <item name="Web" href="../web/index.html"/>
+      <item name="Client" href="../client/index.html"/>
+      <item name="Applet" href="../applet/index.html" />
+    </menu>
+
+    ${reports}
+
+  </body>
+</project>
