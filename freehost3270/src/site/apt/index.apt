@@ -12,9 +12,31 @@ of several modules. The core of the suite is the
 implements terminal client access routines and is intended to be used
 in other applications.
 
+  Basicly speaking, modules provide:
+
+  * The '{{{sub/client/index.html}client}}' module is a backend providing
+convenience methods for accessing raw 3270 terminals. This has
+terminal and telnet related stuff.
+
+  * The '{{{sub/gui/index.html}gui}}' module has terminal screen
+rendering code.
+
+  * The '{{{sub/app/index.html}app}}' module has stuff related to the
+stand alone application.
+
+  * The '{{{sub/applet/index.html}applet}}' module has applet related
+code.
+
+  * The '{{{sub/proxy/index.html}proxy}}' is for applet to mainframe
+relay code.
+
+  * The '{{{sub/web/index.html}web}}' is for bringing applet and the
+proxy into a single web app.
+
+
 Features
 
-  Roughtly speaking, the suite provides:
+  In general, the suite provides:
   
   * Client API that provides access to 3270 terminals from Java
 applications.
