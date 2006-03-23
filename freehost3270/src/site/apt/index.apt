@@ -12,7 +12,7 @@ of several modules. The core of the suite is the
 implements terminal client access routines and is intended to be used
 in other applications.
 
-  Basicly speaking, modules provide:
+  Basically speaking, modules provide:
 
   * The '{{{sub/client/index.html}client}}' module is a backend providing
 convenience methods for accessing raw 3270 terminals. This has
