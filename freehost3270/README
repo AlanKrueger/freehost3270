@@ -1,10 +1,9 @@
-FreeHost 3270 version 0.1 README
-TODO: This file is out of date and should be updated
+Free Host 3270 version 0.2-CURRENT README.
 
 What works:
 
 The TN3270 Emulator applet, the SessionServer servlet, and the
-RightHost3270 servlet (the one that delivers the emulator applet), all
+Free Host 3270 servlet (the one that delivers the emulator applet), all
 seem to work ok.
 
 What doesn't work: (Developers, please feel free to jump in...)
@@ -19,12 +18,8 @@ Fixed in next release
 distribution doesn't have it enabled.  STATUS: Tested and enabled in
 next release.
 
-* Encryption - Stripped out commercial encryption libraries for
-release under LGPL.  STATUS: Fixed in a future release.
-
-* Load Balancing - Removed.  STATUS: Gone forever unless I'm convinced
-that enough users want it.
-
+* Encryption - Will be added shortly using the Java SSL routines now 
+part of Java 1.4
 
 REALLY QUICK START
 
@@ -44,10 +39,8 @@ have a gander at the documentation in ./docs/freehost.html
 
 GETTING SUPPORT
 
-Check out freehost3270-users mailing list at
-http://freehost3270.sourceforge.net If you're not keen on hacking at
-this, paid support/customization/consultation is available from the
-author.  Please contact agillesp@i-no.com.
+Check out freehost3270-users mailing list at 
+http://freehost3270.sourceforge.net 
 
 REPORTING BUGS
 
