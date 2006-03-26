@@ -418,19 +418,19 @@ public class ApplicationFrame extends JFrame implements ActionListener,
             Iterator el = available.values().iterator();
             Host currentHost = (Host) el.next();
 
-            setTitle("RightHost 3270 - Connecting to " +
+            setTitle("Free Host 3270 - Connecting to " +
                 currentHost.getFriendlyName());
 
             try {
                 rhp.connect(host, port);
                 requestFocus();
-                setTitle("RightHost 3270 - Connected to " +
+                setTitle("Free Host 3270 - Connected to " +
                     currentHost.getFriendlyName());
             } catch (Exception e) {
                 showConnectionErrorDialog(e.getMessage());
             }
         } else {
-            setTitle("RightHost 3270 - Not Connected");
+            setTitle("Free Host 3270 - Not Connected");
         }
 
         addFocusListener(this);
