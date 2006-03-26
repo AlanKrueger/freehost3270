@@ -22,9 +22,6 @@
 
 package net.sf.freehost3270.gui;
 
-import net.sf.freehost3270.client.*;
-
-import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,20 +36,19 @@ import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
-import java.lang.Math;
-
 import java.net.UnknownHostException;
-
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+
+import net.sf.freehost3270.client.IsProtectedException;
+import net.sf.freehost3270.client.RW3270;
+import net.sf.freehost3270.client.RW3270Char;
+import net.sf.freehost3270.client.RW3270Field;
+import net.sf.freehost3270.client.RWTnAction;
 
 
 /**
@@ -138,9 +134,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
     private int char_width;
     private int fontsize = DEFAULT_FONT_SIZE;
     private int messageNumber;
-    private int screen_cols;
-    private int screen_rows;
-
+    
     public JTerminalScreen() {
         super();
         rw = new RW3270(2, this);
@@ -339,12 +333,12 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
                     break;
 
                 case KeyEvent.VK_PAGE_UP:
-                    rw.PA(rw.PA1);
+                    rw.PA(RW3270.PA1);
 
                     break;
 
                 case KeyEvent.VK_PAGE_DOWN:
-                    rw.PA(rw.PA2);
+                    rw.PA(RW3270.PA2);
 
                     break;
 
