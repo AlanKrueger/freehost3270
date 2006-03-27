@@ -44,13 +44,13 @@
       <id>anyakin</id>
       <name>Victor Anyakin</name>
       <email>anyakin@users.sourceforge.net</email>
-      <url/>
+      <url>http://viyok.livejournal.com</url>
       <organization/>
       <organizationUrl/>
       <roles>
       	<role>Committer</role>
       </roles>
-      <timezone/>
+      <timezone>2</timezone>
       <properties/>
     </developer>
     <developer>
