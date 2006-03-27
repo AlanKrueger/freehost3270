@@ -22,25 +22,21 @@
 
 package net.sf.freehost3270.application;
 
-import net.sf.freehost3270.client.*;
-import net.sf.freehost3270.gui.JTerminalScreen;
-
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Event;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
-import java.io.InputStream;
-
-import java.util.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -49,9 +45,11 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+
+import net.sf.freehost3270.client.Host;
+import net.sf.freehost3270.gui.JTerminalScreen;
 
 
 /**
@@ -168,9 +166,26 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
         JMenu file = new JMenu("Terminal");
 
-        //file.add(new JMenuItem("Print"));
         //file.add(new JMenuItem("New Window"));
         //file.addSeparator();
+        
+        file.add(new AbstractAction("Print") {
+        	public void actionPerformed(ActionEvent evt) {
+        		PrinterJob printJob = PrinterJob.getPrinterJob();
+        		printJob.setPrintable(rhp);
+        		if (printJob.printDialog()) {
+        			try { 
+        				printJob.print();
+        			} catch(PrinterException pe) {
+        				System.out.println("Error printing: " + pe);
+        			}
+        	    }
+        	      
+        	}
+        });
+        
+        file.addSeparator();
+        
         file.add(new AbstractAction("Exit") {
                 public void actionPerformed(ActionEvent evt) {
                     ApplicationFrame.this.exit();
