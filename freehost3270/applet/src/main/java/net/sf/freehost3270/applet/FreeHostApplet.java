@@ -22,18 +22,13 @@
 
 package net.sf.freehost3270.applet;
 
-import net.sf.freehost3270.client.Host;
-import net.sf.freehost3270.gui.JTerminalScreen;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-
-import java.net.URL;
-
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -42,6 +37,9 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JApplet;
 import javax.swing.JToolBar;
+
+import net.sf.freehost3270.client.Host;
+import net.sf.freehost3270.gui.JTerminalScreen;
 
 
 /**
@@ -151,6 +149,19 @@ public class FreeHostApplet extends JApplet implements ComponentListener {
                     FreeHostApplet.this.redrawScreen();
                 }
             });
+        toolBar.add(new AbstractAction("Print") {
+        	public void actionPerformed(ActionEvent e) {
+        		PrinterJob printJob = PrinterJob.getPrinterJob();
+        		printJob.setPrintable(scr);
+        		if (printJob.printDialog()) {
+        			try { 
+        				printJob.print();
+        			} catch(PrinterException pe) {
+        				System.out.println("Error printing: " + pe);
+        			}
+        		}
+        	}
+        });
         contentPane.add(toolBar, BorderLayout.NORTH);
 
         scr = new JTerminalScreen();
