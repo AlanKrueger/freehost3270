@@ -25,6 +25,7 @@ package net.sf.freehost3270.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
@@ -36,6 +37,9 @@ import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
@@ -67,7 +71,7 @@ import net.sf.freehost3270.client.RWTnAction;
  * @see #setFont(Font)
  * @since 0.1 RHPanel
  */
-public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
+public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, Printable {
     private static final Logger log = Logger.getLogger(JTerminalScreen.class.getName());
 
     /**
@@ -279,12 +283,23 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
                 }
 
                 case KeyEvent.VK_DELETE: {
-                    try {
-                        rw.delete();
-                    } catch (IsProtectedException e) {
-                        log.warning(e.getMessage());
-                    }
-
+                	if (evt.isControlDown()) {
+                		/*
+                		try {
+                			rw.deleteField();
+                			renderScreen();
+                			repaint();
+                		} catch (IsProtectedException e) {
+	                        log.warning(e.getMessage());
+	                    }
+	                    */
+                	} else {
+	                    try {
+	                        rw.delete();
+	                    } catch (IsProtectedException e) {
+	                        log.warning(e.getMessage());
+	                    }
+                	}
                     break;
                 }
 
@@ -1048,6 +1063,57 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener {
      */
     protected void paintComponent(Graphics g) {
         g.drawImage(frameBuff, 0, 0, this);
+    }
+    
+    public int print( Graphics graphics, PageFormat pageFormat, 
+    		int pageIndex ) throws PrinterException {
+    	/*
+    	 * we can only print the current 3270 terminal screen image. There's no such thing as
+    	 * multiple pages, and we're not implementing a client side terminal printer.
+    	 */
+    	if (pageIndex > 0) {
+    		return Printable.NO_SUCH_PAGE;
+    	}
+    	
+    	Graphics2D graphics2d = (Graphics2D)graphics;
+    	graphics2d.translate( pageFormat.getImageableX(), pageFormat.getImageableY() );
+    	graphics2d.setFont(  new Font( "Courier", Font.PLAIN, 10 ) );
+    	
+       	FontMetrics fontMetrics = graphics2d.getFontMetrics();
+   	
+    	char[] c = rw.getDisplay();
+    	
+    	StringBuffer textBuffer = new StringBuffer( rw.getCols() );
+    	/*
+    	 * center the display on the page.
+    	 */
+    	float yPos = (float) ( pageFormat.getImageableHeight() / 2 ) 
+    		- ( (rw.getRows() * fontMetrics.getHeight() ) / 2 );
+    	
+    	/*
+    	 * we're using a fixed width font, so we can get the width
+    	 * of any character. It should equal the width of every
+    	 * other character.
+    	 */
+    	float xPos = (float) (pageFormat.getImageableWidth() / 2) 
+    		- ( (rw.getCols() * fontMetrics.stringWidth( " " ) ) / 2 ) + (72/10);
+    	
+    	for( int i = 1; i < c.length; i++ ) {
+    		if( i % rw.getCols() == 0 ) {		
+    			textBuffer.append( c[i] );
+    			graphics2d.drawString( textBuffer.toString(), xPos, yPos);
+    			
+    			textBuffer.delete( 0, textBuffer.length() );
+    			yPos += fontMetrics.getHeight();
+    		} else {
+    			textBuffer.append( c[i] );
+    		}
+    	}
+    	
+    	yPos += fontMetrics.getHeight();
+    	graphics2d.drawString( textBuffer.toString(), xPos, yPos);
+    	
+    	return Printable.PAGE_EXISTS;
     }
 
     private boolean isAlnum(char c) {
