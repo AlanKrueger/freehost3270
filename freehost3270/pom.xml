@@ -39,7 +39,48 @@
       <archive>http://sourceforge.net/mailarchive/forum.php?forum=freehost3270-users</archive>
     </mailingList>
   </mailingLists>
-  <build>
+  <developers>
+    <developer>
+      <id>anyakin</id>
+      <name>Victor Anyakin</name>
+      <email>anyakin@users.sourceforge.net</email>
+      <url/>
+      <organization/>
+      <organizationUrl/>
+      <roles>
+      	<role>Committer</role>
+      </roles>
+      <timezone/>
+      <properties/>
+    </developer>
+    <developer>
+      <id>letherglov</id>
+      <name>Robbie Stone</name>
+      <email>letherglov@users.sourceforge.net</email>
+      <url/>
+      <organization/>
+      <organizationUrl/>
+      <roles>
+      	<role>Committer</role>
+      </roles>
+      <timezone/>
+      <properties/>
+    </developer>
+    <developer>
+      <id>jstrayer</id>
+      <name>Jon Strayer</name>
+      <email>jstrayer@users.sourceforge.net</email>
+      <url/>
+      <organization/>
+      <organizationUrl/>
+      <roles>
+      	<role>Committer</role>
+      </roles>
+      <timezone/>
+      <properties/>
+    </developer>
+  </developers>  
+  	<build>
     <plugins>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
