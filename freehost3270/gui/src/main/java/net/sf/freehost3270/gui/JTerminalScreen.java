@@ -1077,7 +1077,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     	
     	Graphics2D graphics2d = (Graphics2D)graphics;
     	graphics2d.translate( pageFormat.getImageableX(), pageFormat.getImageableY() );
-    	graphics2d.setFont(  new Font( "Courier", Font.PLAIN, 10 ) );
+    	graphics2d.setFont(  new Font( "Monospaced", Font.PLAIN, 10 ) );
     	
        	FontMetrics fontMetrics = graphics2d.getFontMetrics();
    	
