@@ -76,7 +76,7 @@
       <roles>
       	<role>Committer</role>
       </roles>
-      <timezone/>
+      <timezone>-5</timezone>
       <properties/>
     </developer>
   </developers>  
