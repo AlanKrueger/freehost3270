@@ -8,18 +8,12 @@ seem to work ok.
 
 What doesn't work: (Developers, please feel free to jump in...)
 
-* Print - There's a print option in the File menu of the
-applet... this opens a new browser window, but doesn't do
-anything... it 'should' post the contents of the current screen back
-to a PrintServlet, so the user can print using his browser.  STATUS:
-Fixed in next release
+* Print -The screen may get clipped at the edges because the margin settings 
+are difficult to work with. Look for a fix soon!
 
 * HTML 'Screen Scrape' - The source is in the tree, but the
 distribution doesn't have it enabled.  STATUS: Tested and enabled in
 next release.
-
-* Encryption - Will be added shortly using the Java SSL routines now 
-part of Java 1.4
 
 REALLY QUICK START
 
