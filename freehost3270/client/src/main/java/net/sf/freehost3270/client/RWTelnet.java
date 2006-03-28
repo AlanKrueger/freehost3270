@@ -25,10 +25,14 @@ package net.sf.freehost3270.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import java.util.logging.Logger;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 
 /**
@@ -69,6 +73,7 @@ public class RWTelnet implements Runnable {
     private OutputStream os;
     private RWTn3270StreamParser rw;
     private Socket tnSocket;
+    private SSLSocket tnSocketSSL;
     private Thread sessionThread;
     private short[] buffer3270; //put the 3270 bytes in here
     private boolean[] doHistory;
@@ -77,6 +82,7 @@ public class RWTelnet implements Runnable {
     private short[] subOptionBuffer;
     private boolean[] willHistory;
     private boolean encryption;
+    private int connectionTimeout;
     private int buffer3270Len;
     private int inBufLen;
     private int keyCounter;
@@ -101,6 +107,7 @@ public class RWTelnet implements Runnable {
         subOptionBufferLen = 0;
         tnState = TN_DEFAULT;
         keyCounter = 0;
+        connectionTimeout = 60;
         doHistory = new boolean[3];
         willHistory = new boolean[3];
     }
@@ -196,9 +203,25 @@ public class RWTelnet implements Runnable {
     protected void connect(String host, int port)
         throws UnknownHostException, IOException {
         log.info("connecting to " + host + ":" + port);
-        tnSocket = new Socket(host, port);
-        is = tnSocket.getInputStream();
-        os = tnSocket.getOutputStream();
+        if (encryption) {
+  
+        	log.info( "encrypted connection" );
+        	SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        	tnSocketSSL = (SSLSocket)sslFact.createSocket();
+    		tnSocketSSL.connect( new InetSocketAddress( host, port ), connectionTimeout*1000 );
+    		
+    		is = tnSocketSSL.getInputStream();
+    		os = tnSocketSSL.getOutputStream();
+    		
+    	} else {
+    		
+    		tnSocket = new Socket();
+    		tnSocket.connect( new InetSocketAddress( host, port ), connectionTimeout*1000 );
+    		
+    		is = tnSocket.getInputStream();
+    		os = tnSocket.getOutputStream();
+    		
+    	}
         sessionThread = new Thread(this);
         sessionThread.start();
     }
@@ -207,18 +230,23 @@ public class RWTelnet implements Runnable {
      * Disconnects the current session.
      */
     protected void disconnect() {
-        if (tnSocket == null) {
+        if (tnSocket == null && tnSocketSSL == null) {
             log.warning("socket is null, not connected");
 
             return;
         }
 
         try {
-            sessionThread.interrupt();
+            sessionThread.interrupt();       
             is.close();
             os.close();
-            tnSocket.close();
-            tnSocket = null;
+            if(encryption) {
+            	tnSocketSSL.close();
+            	tnSocketSSL = null;
+            } else {
+            	tnSocket.close();
+            	tnSocket = null;	
+            }
             os = null;
             is = null;
             willHistory = new boolean[3];
@@ -295,7 +323,15 @@ public class RWTelnet implements Runnable {
     protected void setEncryption(boolean encryption) {
         this.encryption = encryption;
     }
-
+    
+    /**
+     * Sets the connection timeout for the connect(String,int) method.
+     * @param timeout integer value in seconds
+     */
+    protected void setConnectionTimeout(int timeout) {
+    	this.connectionTimeout = timeout;
+    }
+    
     protected synchronized void setSessionData(String key, String value) {
         System.out.println("SessionData Key: " + key + " Value: " + value);
 
