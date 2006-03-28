@@ -63,7 +63,7 @@
       <roles>
       	<role>Committer</role>
       </roles>
-      <timezone/>
+      <timezone>-8</timezone>
       <properties/>
     </developer>
     <developer>
