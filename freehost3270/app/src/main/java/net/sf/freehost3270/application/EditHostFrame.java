@@ -40,12 +40,13 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JFormattedTextField;
 
 
 /**
@@ -58,16 +59,22 @@ public class EditHostFrame extends JDialog implements ActionListener,
     PropertyChangeListener {
     private static final String okString = "Ok";
     private static final String cancelString = "Cancel";
-    private JOptionPane optionPane;
-  private JTextField hostField;
+    private JCheckBox useEncryptionField;
     private JFormattedTextField portField;
+    private JOptionPane optionPane;
+    private JTextField hostField;
     private String hostName = "";
+    private boolean useEncryption = false;
     private int portNumber;
     private int response;
     private int result = 0;
 
     public EditHostFrame() {
         this(null, null, null);
+    }
+
+    public EditHostFrame(Frame owner, String hostName, Integer portNumber) {
+        this(null, null, null, false);
     }
 
     /**
@@ -78,19 +85,23 @@ public class EditHostFrame extends JDialog implements ActionListener,
      *        is used.
      * @param portNumber default value for port number. If <code>null</code>
      *        none is used.
+     * @param useEncryption default state for 'use encryption' check box.
      */
-    public EditHostFrame(Frame owner, String hostName, Integer portNumber) {
+    public EditHostFrame(Frame owner, String hostName, Integer portNumber,
+        boolean useEncryption) {
         super(owner, true);
 
         setTitle("Edit connection settings");
-	
-	hostField = new JTextField(10);
-	portField = new JFormattedTextField(NumberFormat.getIntegerInstance());
-	portField.setColumns(4);
+
+        hostField = new JTextField(10);
+        portField = new JFormattedTextField(NumberFormat.getIntegerInstance());
+        portField.setColumns(4);
+        useEncryptionField = new JCheckBox();
+        useEncryptionField.setSelected(useEncryption);
 
         Object[] controls = {
                 "Specify target host server:", "Host name", hostField,
-                "Port number", portField
+                "Port number", portField, "Use encryption", useEncryptionField,
             };
 
         Object[] options = { okString, cancelString };
@@ -181,6 +192,10 @@ public class EditHostFrame extends JDialog implements ActionListener,
         return result;
     }
 
+    public boolean isEncryptionUsed() {
+        return useEncryption;
+    }
+
     public void propertyChange(PropertyChangeEvent e) {
         String prop = e.getPropertyName();
 
@@ -204,8 +219,10 @@ public class EditHostFrame extends JDialog implements ActionListener,
 
                 // we're done; clear and dismiss the dialog
                 hostName = hostField.getText();
-		Number port = (Number) portField.getValue();
+
+                Number port = (Number) portField.getValue();
                 portNumber = port.intValue();
+                useEncryption = useEncryptionField.isSelected();
                 result = 1;
                 clearAndHide();
             } else {
