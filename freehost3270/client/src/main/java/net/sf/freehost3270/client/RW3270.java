@@ -341,7 +341,6 @@ public class RW3270 {
      */
     public void connect(String host, int port)
         throws IOException, UnknownHostException {
-        tn.setEncryption(false);
         tn.connect(host, port);
     }
 
@@ -699,7 +698,6 @@ public class RW3270 {
      * @param encryption will turn encryption on, false will turn encryption
      *        off
      *
-     * @deprecated
      */
     public void setEncryption(boolean encryption) {
         tn.setEncryption(encryption);
