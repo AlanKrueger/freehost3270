@@ -220,6 +220,12 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         rw.connect(host, port);
         log.info("connecting complete");
     }
+    
+    public void connect(String host, int port, boolean encryption)
+    	throws IOException, UnknownHostException {
+    	rw.setEncryption( encryption );
+    	this.connect( host, port );
+    }
 
     public void cursorMove(int oldPos, int newPos) {
         log.finest("moving cursor: " + oldPos + "->" + newPos);
@@ -247,7 +253,10 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         repaint();
         log.info("finished processing incoming data");
     }
-
+    
+    public void PA( int paKey ) {
+    	rw.PA( paKey );
+    }
     /**
      * Processess non-character keyboard events. All control, meta, escape
      * arrow key typed events are processed here.

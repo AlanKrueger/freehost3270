@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.Hashtable;
@@ -40,15 +41,26 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Keymap;
 
 import net.sf.freehost3270.client.Host;
+import net.sf.freehost3270.client.RW3270;
 import net.sf.freehost3270.gui.JTerminalScreen;
 
 
@@ -74,6 +86,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
     private static final boolean encryption = false;
     private JCheckBoxMenuItem showButtons;
     private JMenuBar menubar;
+    private JToolBar toolbar;
 
     //    private RH3270Buttons rhbuttons;
     private JTerminalScreen rhp;
@@ -92,7 +105,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         edhFrame.setVisible(true);
 
         if (edhFrame.getResult() == 1) {
-            init(edhFrame.getHost(), edhFrame.getPort(), null, null);
+            init(edhFrame.getHost(), edhFrame.getPort(), null, null, edhFrame.isEncryptionUsed());
         } else {
             exit();
         }
@@ -104,7 +117,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
     public ApplicationFrame(String host, int port, Map available, JFrame parent) {
         super("FreeHost3270");
-        init(host, port, available, parent);
+        init(host, port, available, parent, false);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -157,13 +170,64 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         super.processEvent(evt);
     }
 
+    private void buildToolBar() {
+    	JButton button = null;
+    	toolbar = new JToolBar();
+    	toolbar.setFloatable( false );
+    
+    	add( toolbar, BorderLayout.PAGE_START );
+        
+        button = new JButton();
+        button.setAction( new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rhp.PA( RW3270.PA1 );
+			}
+        	
+        });
+        button.setToolTipText( "Send a PA1 Command to the Host" );
+        button.setText( "PA1" );
+        toolbar.add( button );
+        
+        toolbar.addSeparator();
+        
+        button = new JButton();
+        button.setAction( new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rhp.PA( RW3270.PA2 );
+			}
+        	
+        });
+        button.setToolTipText( "Send a PA2 Command to the Host" );
+        button.setText( "PA2" );
+        toolbar.add( button );	
+        
+        toolbar.addSeparator();
+        
+        button = new JButton();
+        
+        button.setAction( new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rhp.PA( RW3270.PA3 );
+			}
+        	
+        });
+        button.setToolTipText( "Send a PA3 Command to the Host" );
+        button.setText( "PA3" );
+        toolbar.add( button );	
+    }
     /**
      * Builds main menu. Constructs several menu items.
      */
     private void buildMainMenu() {
         menubar = new JMenuBar();
         setJMenuBar(menubar);
-
+        /* Make sure that the menu does not trap F10, since we use it as PF10 */
+        InputMap inputMap = menubar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(KeyStroke.getKeyStroke("F10"), "none");
+        
         JMenu file = new JMenu("Terminal");
 
         //file.add(new JMenuItem("New Window"));
@@ -389,7 +453,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
      * @param available DOCUMENT ME!
      * @param parent DOCUMENT ME!
      */
-    private void init(String host, int port, Map available, JFrame parent) {
+    private void init(String host, int port, Map available, JFrame parent, boolean encryption) {
         if (available == null) {
             available = new Hashtable();
             available.put(host, new Host(host, port, host));
@@ -399,11 +463,12 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
         this.port = port;
         this.host = host;
+        
         setResizable(false);
-
         setLayout(new BorderLayout());
-
+        
         buildMainMenu();
+        buildToolBar();
 
         // Center on screen
         Dimension screen_size;
@@ -437,7 +502,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
                 currentHost.getFriendlyName());
 
             try {
-                rhp.connect(host, port);
+                rhp.connect(host, port, encryption);
                 requestFocus();
                 setTitle("Free Host 3270 - Connected to " +
                     currentHost.getFriendlyName());

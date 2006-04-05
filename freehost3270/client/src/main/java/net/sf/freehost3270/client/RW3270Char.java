@@ -43,6 +43,7 @@ public class RW3270Char {
     public static final short HL_BLINK = 0xF1;
     public static final short HL_REVERSE = 0xF2;
     public static final short HL_UNDERSCORE = 0xF4;
+    public static final short HL_INTENSIFY = 0xF8;
 
     //color constants p 4.4.6.4
     // TODO: the same constants are defined in the RW3270Field
@@ -87,6 +88,7 @@ public class RW3270Char {
     private boolean isNumeric;
     private boolean isProtected;
     private boolean isStartField;
+    private boolean isHighIntensity;
     private char character;
     private int position;
     private short attribute;
@@ -244,7 +246,9 @@ public class RW3270Char {
     public boolean isStartField() {
         return isStartField;
     }
-
+    public boolean isHighIntensity() {
+    	return isHighIntensity;
+    }
     /**
      * DOCUMENT ME!
      *
@@ -357,6 +361,7 @@ public class RW3270Char {
         isHidden = false;
         isModified = false;
         isNumeric = false;
+        isHighIntensity = false;
 
         if (((attribute & 0x08) != 0) && ((attribute & 0x04) != 0)) { //bit 4 & 5 are on
             isHidden = true;
@@ -375,6 +380,18 @@ public class RW3270Char {
         if ((attribute & 0x01) != 0) { //bit 7 is on = modified
             isModified = true;
         }
+        /*switch( in & 0x0C ) {
+        case 0x00:  Normal, Non-detectable 
+        	break;
+        case 0x04:  Normal, Detectable 
+        	break;
+        case 0x08:  High Intensity 
+        	System.out.println( "High Intensity" );
+        	isHighIntensity = true;
+        	break;
+        case 0x0C:  Non-Display, Non-Detect 
+        	break;
+        }*/
     }
 
     /**

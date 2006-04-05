@@ -248,6 +248,14 @@ public class RWTn3270StreamParser {
      * Transparency p 4.4.6.7
      */
     final static short XA_TRANSPARENCY = 0x46;
+    
+    final static short SF_RPQ_LIST  = 0x00;
+    final static short SF_READ_PART = 0x01;
+    final static short SF_RP_QUERY  = 0x02;
+    final static short SF_RP_QLIST  = 0x03;
+    final static short SF_RPQ_EQUIV = 0x40;
+    final static short SF_RPQ_ALL   = 0x80;
+    
     private RW3270 rw;
     private RW3270Char[] chars;
     private char[] display;
@@ -669,7 +677,7 @@ public class RWTn3270StreamParser {
                 c.clear();
 
                 try {
-                    f.isModified(false);
+                    f.setModified(false);
                 } catch (Exception e) {
                     log.warning(e.getMessage());
                 }
@@ -712,19 +720,6 @@ public class RWTn3270StreamParser {
     private synchronized void writeStructuredField(short[] buf) {
         log.finest("Write Structured Field...");
 
-        short[] queryReply = {
-                0x88, 0x00, 0x16, 0x81, 0x86, 0x00, 0x08, 0x00, 0xf4, 0xf1, 0xf1,
-                0xf2, 0xf2, 0xf3, 0xf3, 0xf4, 0xf4, 0xf5, 0xf5, 0xf6, 0xf6, 0xf7,
-                0xf7, 0x00, 0x0d, 0x81, 0x87, 0x04, 0x00, 0xf0, 0xf1, 0xf1, 0xf2,
-                0xf2, 0xf4, 0xf4, 0x00, 0x17, 0x81, 0x81, 0x01, 0x00, 0x00, 0x50,
-                0x00, 0x20, 0x01, 0x00, 0x0a, 0x02, 0xe5, 0x00, 0x02, 0x00, 0x6f,
-                0x09, 0x0c, 0x0a, 0x00, 0x00, 0x11, 0x81, 0xa6, 0x00, 0x00, 0x0b,
-                0x01, 0x00, 0x00, 0x50, 0x00, 0x18, 0x00, 0x50, 0x00, 0x20, 0x00,
-                0x07, 0x81, 0x88, 0x00, 0x01, 0x02, 0x00, 0x10, 0x81, 0x85, 0x00,
-                0x00, 0x09, 0x10, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0xff,
-                0xff
-            };
-
         int cmnd;
         int length;
         int offset;
@@ -750,7 +745,7 @@ public class RWTn3270StreamParser {
             sfid = buf[offset + 2];
 
             switch (sfid) {
-            case 0x01:
+            case SF_READ_PART:
 
                 /*
                  * Read Partion - p. 5-47
@@ -763,26 +758,49 @@ public class RWTn3270StreamParser {
 
                 pid = buf[offset + 3];
                 type = buf[offset + 4];
-
-                if (type != 0x02) {
-                    return;
-
-                    //WSF-RP not a query op
-                } else if (pid != 0xFF) {
-                    return;
-
-                    //WSF-RP invalid PID
+                /* Check to see if it is a Query 0x02 */
+                switch( type ) {
+                case SF_RP_QUERY:
+                	if( pid != 0xFF ) 
+                		return;        	
+                	try {
+                		short[] queryReply = buildQueryReply( 2, true );
+                		rw.getTelnet().sendData(queryReply, queryReply.length);
+                	} catch (IOException e) {
+                		log.severe(e.getMessage());
+                	}
+                	
+                	break;
+                case SF_RP_QLIST:
+                	if( pid != 0xFF ) 
+                		return;
+                	switch( buf[offset + 5] ) {
+                	case SF_RPQ_LIST:
+                		System.out.println( "List" );
+                		return;
+                	case SF_RPQ_EQUIV:
+                		System.out.println( "Equivalent+List" );
+                		return;
+                	case SF_RPQ_ALL:
+                		System.out.println( "All" );
+                		try {
+                    		short[] queryReply = buildQueryReply( 2, true );
+                    		rw.getTelnet().sendData(queryReply, queryReply.length);
+                    	} catch (IOException e) {
+                    		log.severe(e.getMessage());
+                    	}
+                		break;
+                	}
+                	break;
+                default:
+                		return;
                 }
 
-                try {
-                    rw.getTelnet().sendData(queryReply, queryReply.length);
-                } catch (IOException e) {
-                    log.severe(e.getMessage());
-                }
+                
 
                 break;
 
-            case 0x40:
+            case SF_RPQ_EQUIV:
 
                 /*
                  * Outbound 3270DS - p. 5-41
@@ -835,17 +853,6 @@ public class RWTn3270StreamParser {
             offset += length;
             nleft -= length;
         }
-
-        /*
-           if(dataIn[3] == 1 && dataIn[4] == 255)
-           {
-              try
-              {
-                 rw.getTelnet().sendData(queryReply, queryReply.length);
-              }
-              catch(IOException e){}
-           }
-         */
     }
 
     /** <h2>3.6 Read Operations</h2>
@@ -1028,7 +1035,7 @@ public class RWTn3270StreamParser {
 
         while (e.hasMoreElements()) {
             try {
-                ((RW3270Field) e.nextElement()).isModified(false);
+                ((RW3270Field) e.nextElement()).setModified(false);
             } catch (IsProtectedException ipe) {
                 //the field is protected, how can it be modified? Move on.
                 log.finest("the field is protected. pass it");
@@ -1412,7 +1419,7 @@ public class RWTn3270StreamParser {
      * including, the specified stop address.
      */
     private synchronized void eraseUnprotectedToAddress() {
-        counter++;
+        //counter++;
 
         int address = setBufferAddress();
 
@@ -1497,5 +1504,235 @@ public class RWTn3270StreamParser {
                 chars[c].setField(lastField);
             }
         }
+    }
+    /**
+     * This method builds the reply packet to send to the host, it contains our capabilities
+     * as a 3270 host.
+     *
+     */
+    private synchronized short[] buildQueryReply( int model, boolean summary ) {
+    	/*
+    	 * We have several capabilities which we need to report
+    	 * 1. Color
+    	 * 2. Highlighting
+    	 * 3. Partition
+    	 */
+    	final short HIGHLIGHT_DEFAULT 		= 0x00;
+    	final short HIGHLIGHT_NORMAL  		= 0xF0;
+    	final short HIGHLIGHT_BLINK			= 0xF1;
+    	final short HIGHLIGHT_REVERSE		= 0xF2;
+    	final short HIGHLIGHT_UNDERSCORE	= 0xF4;
+    	final short HIGHLIGHT_INTENSIFY		= 0xF8;
+    	
+    	/* Colors: Listed in 6.13.3 */
+    	final short COLOR_NEUTRAL1			= 0x00;
+    	final short COLOR_BLUE				= 0xF1;
+    	final short COLOR_RED				= 0xF2;
+    	final short COLOR_PINK				= 0xF3;
+    	final short COLOR_GREEN				= 0xF4;
+    	final short COLOR_TURQUOISE			= 0xF5;
+    	final short COLOR_YELLOW			= 0xF6;
+    	final short COLOR_NEUTRAL2			= 0xF7;
+    	final short COLOR_BLACK				= 0xF8;
+    	final short COLOR_DEEP_BLUE			= 0xF9;
+    	final short COLOR_ORANGE			= 0xFA;
+    	final short COLOR_PURPLE			= 0xFB;
+    	final short COLOR_PALE_GREEN		= 0xFC;
+    	final short COLOR_PALE_TURQUOISE	= 0xFD;
+    	final short COLOR_GREY				= 0xFE;
+    	final short COLOR_WHITE				= 0xFF;
+    	
+    	final short QUERY_REPLY				= 0x81;
+    	final short SUMMARY_QUERY_REPLY		= 0x80;
+    	final short COLOR_QUERY_REPLY 		= 0x86;
+    	final short HIGHLIGHT_QUERY_REPLY	= 0x87;
+    	final short IMP_PART_QUERY_REPLY	= 0xA6;
+    	
+    	/* Highlighting */
+    	short[] highlightReply = new short[15];
+    	/* Bytes 0-1 Length of the Structured Field */
+    	highlightReply[0]  = (short)0x00;
+    	highlightReply[1]  = (short)0x0F;
+    	/* Byte 2 Query Reply */
+    	highlightReply[2]  = QUERY_REPLY;
+    	/* Byte 3 Highlighting */
+    	highlightReply[3]  = HIGHLIGHT_QUERY_REPLY;
+    	/* Byte 4 Number of attribute-value/action pairs */
+    	highlightReply[4]  = (short)0x50; 
+    	/* Part 1: Data stream attribute value accepted  */
+    	/* Part 2: Data stream action */
+    	/* Pair 1 */
+        highlightReply[5]  = HIGHLIGHT_DEFAULT;
+        highlightReply[6]  = HIGHLIGHT_NORMAL;
+        /* Pair 2 */
+        highlightReply[7]  = HIGHLIGHT_BLINK;
+        highlightReply[8]  = HIGHLIGHT_BLINK;
+        /* Pair 3 */
+        highlightReply[9]  = HIGHLIGHT_REVERSE;
+        highlightReply[10] = HIGHLIGHT_REVERSE;
+        /* Pair 4 */
+        highlightReply[11] = HIGHLIGHT_UNDERSCORE;
+        highlightReply[12] = HIGHLIGHT_UNDERSCORE;
+        /* Pair 5 */
+        highlightReply[13] = HIGHLIGHT_INTENSIFY;
+        highlightReply[14] = HIGHLIGHT_INTENSIFY;
+        
+    	/* Color */
+        short[] colorReply = new short[40];
+        
+        /* Bytes 0-1 Length of the Structured Field */
+        colorReply[0]  = (short)0x00;
+        colorReply[1]  = (short)0x26;
+        
+        colorReply[2]  = QUERY_REPLY;
+        colorReply[3]  = COLOR_QUERY_REPLY;
+        
+        colorReply[4]  = (short)0x00;
+        /* Number of Pairs */
+        colorReply[5]  = (short)0x10;
+        
+        /* Pair 1 */
+        colorReply[6]  = COLOR_NEUTRAL1;
+        colorReply[7]  = COLOR_WHITE;
+        /* Pair 2 */
+        colorReply[8]  = COLOR_BLUE;
+        colorReply[9]  = COLOR_BLUE;
+        /* Pair 3 */
+        colorReply[10] = COLOR_RED;
+        colorReply[11] = COLOR_RED;
+        /* Pair 4 */
+        colorReply[12] = COLOR_PINK;
+        colorReply[13] = COLOR_PINK;
+        /* Pair 5 */
+        colorReply[14] = COLOR_GREEN;
+        colorReply[15] = COLOR_GREEN;
+        /* Pair 6 */
+        colorReply[16] = COLOR_TURQUOISE;
+        colorReply[17] = COLOR_TURQUOISE;
+        /* Pair 7 */
+        colorReply[18] = COLOR_YELLOW;
+        colorReply[19] = COLOR_YELLOW;
+        /* Pair 8 */
+        colorReply[20] = COLOR_NEUTRAL2;
+        colorReply[21] = COLOR_NEUTRAL2;
+        /* Pair 9 */
+        colorReply[22] = COLOR_BLACK;
+        colorReply[23] = COLOR_BLACK;
+        /* Pair 10 */
+        colorReply[24] = COLOR_DEEP_BLUE;
+        colorReply[25] = COLOR_DEEP_BLUE;
+        /* Pair 11 */
+        colorReply[26] = COLOR_ORANGE;
+        colorReply[27] = COLOR_ORANGE;
+        /* Pair 12 */
+        colorReply[28] = COLOR_PURPLE;
+        colorReply[29] = COLOR_PURPLE;
+        /* Pair 13 */
+        colorReply[30] = COLOR_PALE_GREEN;
+        colorReply[31] = COLOR_PALE_GREEN;
+        /* Pair 14 */
+        colorReply[32] = COLOR_PALE_TURQUOISE;
+        colorReply[33] = COLOR_PALE_TURQUOISE;
+        /* Pair 15 */
+        colorReply[34] = COLOR_GREY;
+        colorReply[35] = COLOR_GREY;
+        /* Pair 16 */
+        colorReply[36] = COLOR_WHITE;
+        colorReply[37] = COLOR_WHITE;
+        /* Pair 17 */
+        colorReply[38] = COLOR_GREY;
+        colorReply[39] = COLOR_GREY;
+        
+        /* Implicit Partition. See 6.31.2 */        
+        short[] partitionReply = new short[17];
+        
+        partitionReply[0]  = (short)QUERY_REPLY;
+        /* Bytes 1-2 Length */
+        partitionReply[1]  = (short)0x00;
+        partitionReply[2]  = (short)0x11;
+        /* Byte 3 QCODE Identifier */
+        partitionReply[3]  = (short)IMP_PART_QUERY_REPLY;
+        /* Bytes 4-5 Reserved */
+        partitionReply[4]  = (short)0x00;
+        partitionReply[5]  = (short)0x00;
+        /* 6.31.3 Implicit Partition Sizes for Display Devices Self-Defining Parameter */
+        partitionReply[6]  = (short)0x0B;
+        partitionReply[7]  = (short)0x01;
+        partitionReply[8]  = (short)0x00;
+        /* Bytes 9-10   Width of the Implicit Partition default screen size (in character cells) */
+        partitionReply[9]  = (short)0x00;
+        partitionReply[10] = (short)0x50;
+        /* Bytes 11-12  Height of the Implicit Partition default screen size */
+        partitionReply[11] = (short)0x00;
+        partitionReply[12] = (short)0x18;
+        /* FIXME The alternate size should be the dimensions of the terminal model selected */
+        /* Bytes 13-14  Width of the Implicit Partition alternate screen size */
+        partitionReply[13] = (short)0x00;
+        partitionReply[14] = (short)0x50;
+        /* Bytes 15-16  Height of the Implicit Partition alternate screen size */
+        partitionReply[15] = (short)0x00;
+        partitionReply[16] = (short)0x18;
+        
+        
+        /* Summary */
+        short[] summaryReply = new short[8];
+        summaryReply[0]  = (short)0x00;
+        summaryReply[1]  = (short)0x08;
+        /* Byte 2 Query Reply */
+        summaryReply[2]  = QUERY_REPLY;
+        /* Byte 3 Summary Query Reply */
+        summaryReply[3]  = SUMMARY_QUERY_REPLY;
+        /* These are our capabilities...
+         * Kind of silly to indicate we're capable of a summary reply
+         * in a summary reply...that's how it works though.
+         */
+        summaryReply[4]  = SUMMARY_QUERY_REPLY;
+        summaryReply[5]  = COLOR_QUERY_REPLY;
+        summaryReply[6]  = HIGHLIGHT_QUERY_REPLY;
+        summaryReply[7]  = IMP_PART_QUERY_REPLY;
+        
+        /* Assembly of the Reply Packet */
+        
+        /* Create a buffer the length of each of the member pieces, plus the header and footer */
+        int qReplyLength = 1 + summaryReply.length + highlightReply.length 
+        					 + colorReply.length   + partitionReply.length;
+        
+        /* Initialize the queryReply packet buffer */
+        short[] queryReply = new short[qReplyLength];
+        
+        
+        queryReply[0] = 0x88;
+        int bufPos = 1;
+        
+        /* Add the summary Capability */
+        for( int i = 0; i < summaryReply.length; i++ ) {
+        	queryReply[bufPos] = summaryReply[i];
+        	bufPos++;
+        }
+        
+        /* Add the Color Capability */
+        for( int i = 0; i < colorReply.length; i++ ) {
+        	queryReply[bufPos] = colorReply[i];
+        	bufPos++;
+        }
+
+        /* Add the Highlight Capability */
+        for( int i = 0; i < highlightReply.length; i++ ) {
+        	queryReply[bufPos] = highlightReply[i];
+        	bufPos++;
+        }
+        
+        /* Add the Partition Capability */
+        for( int i = 0; i < partitionReply.length; i++ ) {
+        	queryReply[bufPos] = partitionReply[i];
+        	bufPos++;
+        }
+        
+        
+        /*for(int i = 0; i < queryReply.length; i++ ) {
+        	String myStr = Long.toHexString(new Short( queryReply[i] ).longValue());
+        	System.out.print( myStr + " " );
+        }*/
+    	return queryReply;
     }
 }

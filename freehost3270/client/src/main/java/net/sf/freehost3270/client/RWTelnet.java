@@ -308,7 +308,8 @@ public class RWTelnet implements Runnable {
         tmpByteBuf[outLen + 1] = (byte) EOR;
 
         //write the data out to the EncryptedOutputStream
-        os.write(tmpByteBuf, 0, tmpByteBuf.length);
+        os.write(tmpByteBuf);
+        os.flush();
 
         //System.out.println("Sent " + tmpByteBuf.length + " bytes");
         //for(int i = 0; i < tmpByteBuf.length; i++)
@@ -440,11 +441,11 @@ public class RWTelnet implements Runnable {
         byte[] tmpBuffer = {
                 (byte) IAC, (byte) SB, (byte) TERMINAL_TYPE, (byte) OPTION_IS,
                 (byte) 'I', (byte) 'B', (byte) 'M', (byte) '-', (byte) '3',
-                (byte) '2', (byte) '7', (byte) '8', (byte) '-',
-                (byte) ('0' + tn3270Model), (byte) IAC, (byte) SE
+                (byte) '2', (byte) '7', (byte) '9', (byte) '-',
+                (byte) ('0' + tn3270Model), (byte) '-', (byte) 'E', (byte) IAC, (byte) SE
             };
 
-        os.write(tmpBuffer, 0, 16);
+        os.write(tmpBuffer);
         os.flush();
 
         log.fine("sent terminal type");

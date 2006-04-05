@@ -256,7 +256,7 @@ public class RW3270Field {
         }
 
         try {
-            isModified(true);
+            setModified(true);
         } catch (Exception e) {
         }
 
@@ -332,7 +332,9 @@ public class RW3270Field {
     public boolean isNumeric() {
         return fa.isNumeric();
     }
-
+    public boolean isHighIntensity() {
+    	return fa.isHighIntensity();
+    }
     public int getFieldAttribute() {
         return fa.getFieldAttribute();
     }
