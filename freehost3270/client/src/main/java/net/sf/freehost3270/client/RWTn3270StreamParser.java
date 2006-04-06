@@ -1558,7 +1558,7 @@ public class RWTn3270StreamParser {
     	/* Byte 3 Highlighting */
     	highlightReply[3]  = HIGHLIGHT_QUERY_REPLY;
     	/* Byte 4 Number of attribute-value/action pairs */
-    	highlightReply[4]  = (short)0x50; 
+    	highlightReply[4]  = (short)0x05; 
     	/* Part 1: Data stream attribute value accepted  */
     	/* Part 2: Data stream action */
     	/* Pair 1 */
@@ -1593,7 +1593,7 @@ public class RWTn3270StreamParser {
         
         /* Pair 1 */
         colorReply[6]  = COLOR_NEUTRAL1;
-        colorReply[7]  = COLOR_WHITE;
+        colorReply[7]  = COLOR_GREEN;
         /* Pair 2 */
         colorReply[8]  = COLOR_BLUE;
         colorReply[9]  = COLOR_BLUE;
@@ -1640,16 +1640,17 @@ public class RWTn3270StreamParser {
         colorReply[36] = COLOR_WHITE;
         colorReply[37] = COLOR_WHITE;
         /* Pair 17 */
-        colorReply[38] = COLOR_GREY;
-        colorReply[39] = COLOR_GREY;
+        colorReply[38] = COLOR_WHITE;
+        colorReply[39] = COLOR_WHITE;
         
         /* Implicit Partition. See 6.31.2 */        
         short[] partitionReply = new short[17];
         
-        partitionReply[0]  = (short)QUERY_REPLY;
-        /* Bytes 1-2 Length */
-        partitionReply[1]  = (short)0x00;
-        partitionReply[2]  = (short)0x11;
+        
+        /* Bytes 0-1 Length */
+        partitionReply[0]  = (short)0x00;
+        partitionReply[1]  = (short)0x11;
+        partitionReply[2]  = (short)QUERY_REPLY;
         /* Byte 3 QCODE Identifier */
         partitionReply[3]  = (short)IMP_PART_QUERY_REPLY;
         /* Bytes 4-5 Reserved */
@@ -1729,9 +1730,12 @@ public class RWTn3270StreamParser {
         }
         
         
-        /*for(int i = 0; i < queryReply.length; i++ ) {
+      /*  for(int i = 0; i < queryReply.length; i++ ) {
         	String myStr = Long.toHexString(new Short( queryReply[i] ).longValue());
-        	System.out.print( myStr + " " );
+        	if( myStr.length() == 1 ) {
+        		myStr = "0" + myStr;
+        	}
+        	System.out.print( myStr );
         }*/
     	return queryReply;
     }
