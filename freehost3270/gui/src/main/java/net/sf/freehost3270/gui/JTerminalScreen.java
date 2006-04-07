@@ -675,8 +675,8 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         frame.setFont(font);
         frame.setColor(cursorColor);
         frame.fillRect(((pos % rw.getCols()) * char_width) + (char_width + 5),
-            ((pos / rw.getCols()) * char_height) + 6, char_width,
-            char_height - 1);
+            ((pos / rw.getCols()) * char_height) + 7, char_width,
+            char_height - 2);
         frame.setColor(Color.black);
 
         byte[] c = { (byte) rw.getChar(pos).getDisplayChar() };
@@ -1012,8 +1012,8 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         if (c.isStartField()) {
             frame.setColor(currentBGColor);
             frame.fillRect(((pos % rw.getCols()) * char_width) +
-                (char_width + 5), ((pos / rw.getCols()) * char_height) + 6,
-                char_width, char_height - 1);
+                (char_width + 5), ((pos / rw.getCols()) * char_height) + 7,
+                char_width, char_height - 2);
 
             return;
         }
@@ -1059,8 +1059,8 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         //we have to draw the background
         frame.setColor(bgcolor);
         frame.fillRect(((pos % rw.getCols()) * char_width) + (char_width + 5),
-            ((pos / rw.getCols()) * char_height) + 6, char_width,
-            char_height - 1);
+            ((pos / rw.getCols()) * char_height) + 7, char_width,
+            char_height - 2);
 
         paintData(ca, 1, pos, bgcolor, fgcolor, underscore, hidden);
     }
