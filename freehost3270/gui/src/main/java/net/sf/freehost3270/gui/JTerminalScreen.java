@@ -933,7 +933,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
 
             //int width = x * 85;
             int width = char_width * 85;
-            int height = (char_height * 30) + 7;
+            int height = (char_height * 27);
             setSize(width, height);
             setPreferredSize(new Dimension(width, height));
             frameBuff = new BufferedImage(width, height,

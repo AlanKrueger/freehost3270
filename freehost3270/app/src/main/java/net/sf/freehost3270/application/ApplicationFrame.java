@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.Hashtable;
@@ -41,23 +40,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Keymap;
 
 import net.sf.freehost3270.client.Host;
 import net.sf.freehost3270.client.RW3270;
@@ -83,12 +76,8 @@ public class ApplicationFrame extends JFrame implements ActionListener,
             Color.ORANGE, Color.CYAN, new Color(0, 51, 102),
             new Color(204, 255, 204)
         };
-    private static final boolean encryption = false;
-    private JCheckBoxMenuItem showButtons;
     private JMenuBar menubar;
     private JToolBar toolbar;
-
-    //    private RH3270Buttons rhbuttons;
     private JTerminalScreen rhp;
     private Map available;
     private String host;
@@ -477,8 +466,7 @@ public class ApplicationFrame extends JFrame implements ActionListener,
 
     private void fontSize(float size) {
         rhp.setFont(rhp.getFont().deriveFont(size));
-        setSize(rhp.getSize().width + getInsets().top + getInsets().bottom,
-            rhp.getSize().height + getInsets().right + getInsets().left);
+        pack();
         repaint();
     }
 
@@ -506,13 +494,12 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         
         buildMainMenu();
         buildToolBar();
-
+        pack();
+        
         // Center on screen
         Dimension screen_size;
         Dimension frame_size;
         screen_size = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(rhp.getSize().width + getInsets().top + getInsets().bottom,
-            rhp.getSize().height + getInsets().right + getInsets().left);
         frame_size = this.getSize();
 
         int offX = frame_size.width;
