@@ -257,6 +257,15 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     public void PA( int paKey ) {
     	rw.PA( paKey );
     }
+    
+    public void enter() {
+    	rw.enter();
+    }
+    
+    public void clear() {
+    	rw.clear();
+    }
+    
     /**
      * Processess non-character keyboard events. All control, meta, escape
      * arrow key typed events are processed here.
