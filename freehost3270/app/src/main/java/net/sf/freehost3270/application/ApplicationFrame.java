@@ -187,9 +187,8 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         });
         button.setToolTipText( "Send a PA1 Command to the Host" );
         button.setText( "PA1" );
+        button.setFocusable( false );
         toolbar.add( button );
-        
-        toolbar.addSeparator();
         
         button = new JButton();
         button.setAction( new AbstractAction() {
@@ -201,9 +200,8 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         });
         button.setToolTipText( "Send a PA2 Command to the Host" );
         button.setText( "PA2" );
+        button.setFocusable( false );
         toolbar.add( button );	
-        
-        toolbar.addSeparator();
         
         button = new JButton();
         
@@ -216,7 +214,38 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         });
         button.setToolTipText( "Send a PA3 Command to the Host" );
         button.setText( "PA3" );
-        toolbar.add( button );	
+        button.setFocusable( false );
+        toolbar.add( button );
+        
+        toolbar.addSeparator();
+        
+        button = new JButton();
+        
+        button.setAction( new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rhp.enter();
+			}
+        	
+        });
+        button.setToolTipText( "Send an Enter Command to the Host" );
+        button.setText( "ENT" );
+        button.setFocusable( false );
+        toolbar.add( button );
+        
+        button = new JButton();
+        
+        button.setAction( new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rhp.clear();
+			}
+        	
+        });
+        button.setToolTipText( "Send a Clear Command to the Host" );
+        button.setText( "CLR" );
+        button.setFocusable( false );
+        toolbar.add( button );
     }
     /**
      * Builds main menu. Constructs several menu items.
@@ -421,11 +450,19 @@ public class ApplicationFrame extends JFrame implements ActionListener,
         }
 
         options.add(bgcolor);
-
-        //options.addSeparator();
-        //options.add(showButtons = new JCheckBoxMenuItem("Buttons"));
+        
         menubar.add(options);
+        
+        /*options.add(new AbstractAction( "Colors..." ) {
 
+			public void actionPerformed(ActionEvent arg0) {
+				 ColorSettingsFrame colorFrame = new ColorSettingsFrame(ApplicationFrame.this);
+				 colorFrame.setVisible(true);
+				
+			}
+        	
+        });*/
+        
         JMenu about = new JMenu("Help");
         menubar.add(about);
         about.add(new AbstractAction("About") {
