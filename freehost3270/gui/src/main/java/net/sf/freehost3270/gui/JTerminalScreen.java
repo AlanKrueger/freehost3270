@@ -678,7 +678,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
      */
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            System.out.println("mouse clicked at: (" + e.getX() + ", " + e.getY() +
+            log.finest("mouse clicked at: (" + e.getX() + ", " + e.getY() +
                 ")");
 
             int oldpos = rw.getCursorPosition();
