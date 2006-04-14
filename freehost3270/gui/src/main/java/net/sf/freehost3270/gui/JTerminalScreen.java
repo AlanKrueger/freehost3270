@@ -707,7 +707,6 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     }
     
     public void mouseReleased(MouseEvent e) {
-    	System.out.println( e );
     	repaint();
     }
     
