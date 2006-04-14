@@ -29,10 +29,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
@@ -42,11 +43,13 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputAdapter;
 
 import net.sf.freehost3270.client.IsProtectedException;
 import net.sf.freehost3270.client.RW3270;
@@ -72,6 +75,7 @@ import net.sf.freehost3270.client.RWTnAction;
  * @since 0.1 RHPanel
  */
 public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, Printable {
+	
     private static final Logger log = Logger.getLogger(JTerminalScreen.class.getName());
 
     /**
@@ -130,6 +134,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
 
     /** Current status message. */
     private String statusMessage;
+    private String currentPosition;
     private String strMessage;
     private boolean messageOnScreen;
     private boolean tooManyConnections;
@@ -138,6 +143,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     private int char_width;
     private int fontsize = DEFAULT_FONT_SIZE;
     private int messageNumber;
+    private Point rectStartPoint;
     
     public JTerminalScreen() {
         super();
@@ -147,14 +153,28 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
                 BufferedImage.TYPE_INT_RGB);
         frame = frameBuff.createGraphics();
         messageOnScreen = false;
+        rectStartPoint = new Point();
         setBackground(currentBGColor);
         setFont(DEFAULT_FONT);
         addKeyListener(this);
-        addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    JTerminalScreen.this.mouseClicked(e);
-                }
-            });
+        MouseInputAdapter mouseAdapter = (new MouseInputAdapter() {
+        	public void mouseClicked(MouseEvent e) {
+        		JTerminalScreen.this.mouseClicked(e);
+        	}
+        	public void mousePressed(MouseEvent e) {
+        		JTerminalScreen.this.mousePressed(e);
+        	}
+        	    
+        	public void mouseReleased(MouseEvent e) {
+        		JTerminalScreen.this.mouseReleased(e);
+        	}
+        	
+        	public void mouseDragged(MouseEvent e) {
+        		JTerminalScreen.this.mouseDragged(e);
+        	}
+        });
+        addMouseListener( mouseAdapter );
+        addMouseMotionListener( mouseAdapter );
 
         // originally, JPanel does not recieve focus
         setFocusable(true);
@@ -658,7 +678,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
      */
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            log.finest("mouse clicked at: (" + e.getX() + ", " + e.getY() +
+            System.out.println("mouse clicked at: (" + e.getX() + ", " + e.getY() +
                 ")");
 
             int oldpos = rw.getCursorPosition();
@@ -669,7 +689,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
                 int newpos = (((int) Math.floor(dx / char_width)) +
                     ((int) Math.floor(dy / char_height) * 80)) - 1;
 
-                if (newpos >= 0) {
+                if (newpos >= 0 && newpos < ( rw.getCols() * rw.getRows() )  ) {
                     rw.setCursorPosition((short) (newpos));
                     cursorMove(oldpos, newpos);
                 }
@@ -678,8 +698,55 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
 
         requestFocus();
     }
-
+    
+    public void mousePressed(MouseEvent e) {
+    	/* Save the initial point for the rectangle */
+    	rectStartPoint.x = e.getX();
+    	rectStartPoint.y = e.getY();
+    	
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+    	System.out.println( e );
+    	repaint();
+    }
+    
+    public void mouseDragged(MouseEvent e) {
+    	Rectangle rect = null;
+    	
+    	int eventY = e.getY();
+    	int eventX = e.getX();
+    	renderScreen();
+    	
+    	frame.setColor( Color.WHITE );
+    	
+    	/* Quadrant IV */
+    	if( (rectStartPoint.x < eventX) && (rectStartPoint.y < eventY ) ) {
+    		rect = new Rectangle( rectStartPoint.x, rectStartPoint.y, 
+    				eventX-rectStartPoint.x, eventY - rectStartPoint.y ); 		
+    	}
+    	/* Quadrant I */
+    	else if( rectStartPoint.x < eventX ) {
+    		rect = new Rectangle( rectStartPoint.x, eventY, 
+    				eventX-rectStartPoint.x,  rectStartPoint.y - eventY);
+    		
+    	} else if( rectStartPoint.y < eventY ) {
+    		/* Quadrant III */
+    		rect = new Rectangle( eventX, rectStartPoint.y, 
+    				rectStartPoint.x - eventX, eventY - rectStartPoint.y );
+    		
+    	} else {
+    		/* Quadrant II */
+    		rect = new Rectangle( eventX, eventY, 
+    				rectStartPoint.x-eventX, rectStartPoint.y-eventY );
+    		
+    	}
+    	frame.draw( rect );
+    	repaint();
+    }
+    
     public void paintCursor(int pos) {
+    	setCurrentPosition( pos );
         //System.out.println(rw.getCols() + " = " + rw.getCols());
         frame.setFont(font);
         frame.setColor(cursorColor);
@@ -696,18 +763,27 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
 
     public void paintStatus() {
         frame.setColor(Color.red);
+        
         frame.drawLine(char_width + 5,
             ((rw.getRows()) * char_height) + char_ascent,
             (rw.getCols() * char_width) + char_width + 5,
             ((rw.getRows()) * char_height) + char_ascent);
+        
         frame.setColor(currentBGColor);
+        
         frame.fillRect(char_width + 5, (rw.getRows() + 1) * char_height,
             (rw.getCols()) * char_width, char_height);
+        
         frame.setColor(currentFGColor);
 
         if (statusMessage != null) {
             frame.drawString(statusMessage, char_width + 5,
                 ((rw.getRows()) * char_height) + char_height + char_ascent);
+        }
+        
+        if( currentPosition != null ) {
+        	frame.drawString( currentPosition, (rw.getCols() - 6) * char_width,
+        			((rw.getRows()) * char_height) + char_height + char_ascent);
         }
     }
 
@@ -777,24 +853,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
                 char_width * 22, char_height * 19);
         }
     }
-
-    public void print() {
-        //URL print = null;
-        char[] c = rw.getDisplay();
-
-        //char c[]= new char[chars.length];
-        //for(int i = 0; i < chars.length; i++)
-        //      c[i] = chars[i].getDisplayChar();
-        StringBuffer scr = new StringBuffer(new String(c));
-
-        for (int i = 0; i < rw.getRows(); i++) {
-            scr.insert((i * rw.getCols()) + i, '\n');
-        }
-
-        //         try {
-        // 	  //String urlEnc = URLEncoder.encode(scr.toString(), "UTF-8");
-    }
-
+    
     /**
      * Renders a terminal screen on the buffered image graphics context.
      */
@@ -966,7 +1025,22 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         paintStatus();
         repaint();
     }
-
+    public void setCurrentPosition( int newPos ) {
+    	/* this is integer, not floating division */
+    	int row = newPos / rw.getCols();
+    	int col = newPos - ( row * rw.getCols() );
+    	
+    	NumberFormat rowFormat = NumberFormat.getInstance();
+    	rowFormat.setMinimumIntegerDigits( 3 );
+    	
+    	String rowString = rowFormat.format( row + 1 );
+    	String colString = rowFormat.format( col + 1 );
+    	
+    	this.currentPosition = rowString + "/" + colString;
+    	
+    	paintStatus();
+    	repaint();
+    }
     public void setWindowMessage(int msg) {
         messageNumber = msg;
         paintWindowMessage();
