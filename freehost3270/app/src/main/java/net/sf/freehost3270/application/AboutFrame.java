@@ -43,11 +43,11 @@ import javax.swing.JPanel;
  */
 public class AboutFrame extends JDialog {
     public static final String ABOUT_MSG = "<html><body>" +
-        "<h2>FreeHost3270 a suite of terminal 3270 access utilities</h2>" +
-        "<p>" + "<em>Copyright, (c) 1998, 2001 Art Gillespie</em><br>" +
-        "<em>Copyright, (c) 2005 FreeHost3270 Project Contributors.</em>" +
-        "</p><p>" + "Project home page: " +
-        "<a href=\"http://freehost3270.sourceforge.net/\">" +
+        "<h2>&nbsp;FreeHost3270</h2>\n<h3>&nbsp;a suite of 3270 terminal access utilities</h3>" +
+        "<p>" + "<em>&nbsp;Copyright, (c) 1998, 2001 Art Gillespie</em><br>" +
+        "<em>&nbsp;Copyright, (c) 2005 FreeHost3270 Project Contributors.</em>" +
+        "</p>\n\n" + 
+        " <br>&nbsp;Project home page: <a href=\"http://freehost3270.sourceforge.net/\">" +
         "http://freehost3270.sourceforge.net/</a>" + "</p><pre>" +
         " This library is free software; you can redistribute it and/or\n" +
         " modify it under the terms of the GNU Lesser General Public\n" +
@@ -59,8 +59,10 @@ public class AboutFrame extends JDialog {
         " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n" +
         " Lesser General Public License for more details.<br>" + "\n" +
         " You should have received a copy of the GNU Lesser General Public\n" +
-        " License along with this library; if not, write to the Free Software\n" +
-        " Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA" +
+        " License along with this library; if not, write to:\n\n" +
+        " The Free Software Foundation, Inc.\n" +
+        " 59 Temple Place, Suite 330\n" +
+        " Boston, MA 02111-1307 USA\n" +
         "</pre></body></html>";
 
     public AboutFrame(Frame owner) {
