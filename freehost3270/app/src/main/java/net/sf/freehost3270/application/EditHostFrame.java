@@ -22,9 +22,7 @@
 
 package net.sf.freehost3270.application;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -33,19 +31,15 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.text.NumberFormat;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
@@ -59,6 +53,8 @@ public class EditHostFrame extends JDialog implements ActionListener,
     PropertyChangeListener {
     private static final String okString = "Ok";
     private static final String cancelString = "Cancel";
+    private JComboBox typeCombo;
+    private JComboBox modelCombo;
     private JCheckBox useEncryptionField;
     private JFormattedTextField portField;
     private JOptionPane optionPane;
@@ -66,7 +62,8 @@ public class EditHostFrame extends JDialog implements ActionListener,
     private String hostName = "";
     private boolean useEncryption = false;
     private int portNumber;
-    private int response;
+    private int modelNumber;
+    private int terminalType;
     private int result = 0;
 
     public EditHostFrame() {
@@ -89,20 +86,38 @@ public class EditHostFrame extends JDialog implements ActionListener,
      */
     public EditHostFrame(Frame owner, String hostName, Integer portNumber,
         boolean useEncryption) {
-        super(owner, true);
-
-        setTitle("Edit connection settings");
+        super(owner, "Edit connection settings", true);
 
         hostField = new JTextField(10);
         portField = new JFormattedTextField(NumberFormat.getIntegerInstance());
         portField.setColumns(4);
         useEncryptionField = new JCheckBox();
         useEncryptionField.setSelected(useEncryption);
-
+        
+        String[] terminalTypes = { 
+        		"3278", 
+        		"3279", 
+        		"3279 w/Extended Attributes" };
+        
+        typeCombo = new JComboBox( terminalTypes );
+        typeCombo.setSelectedIndex(2);
+        typeCombo.setEnabled( false );
+        
+        String[] modelTypes = { 
+        		"Model 2 (24x80)", 
+        		"Model 3 (32x80)", 
+        		"Model 4 (43x80)" , 
+        		"Model 5 (27x132)" };
+        
+        modelCombo = new JComboBox( modelTypes );
+        modelCombo.setEnabled( false );
+        
         Object[] controls = {
                 "Specify target host server:", "Host name", hostField,
-                "Port number", portField, "Use encryption", useEncryptionField,
-            };
+                "Port number", portField, 
+                "3270 type", typeCombo,
+                "3270 model", modelCombo,
+                "Use SSL encryption", useEncryptionField };
 
         Object[] options = { okString, cancelString };
 
@@ -163,7 +178,22 @@ public class EditHostFrame extends JDialog implements ActionListener,
     public String getHost() {
         return hostName;
     }
-
+    /**
+     * Returns the 3270 terminal model number selected.
+     * 
+     * @return int representing the model number
+     */
+    public int getModelNumber() {
+    	return modelNumber;
+    }
+    /**
+     * Returns the 3270 terminal type selected by the user.
+     * 
+     * @return an integer representing the 3270 type.
+     */
+    public int getTerminalType() {
+    	return terminalType;
+    }
     /**
      * Returns port number entered by user.
      *
@@ -223,6 +253,8 @@ public class EditHostFrame extends JDialog implements ActionListener,
                 Number port = (Number) portField.getValue();
                 portNumber = port.intValue();
                 useEncryption = useEncryptionField.isSelected();
+                modelNumber = modelCombo.getSelectedIndex() + 2;
+                terminalType = typeCombo.getSelectedIndex();
                 result = 1;
                 clearAndHide();
             } else {
