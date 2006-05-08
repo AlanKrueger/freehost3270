@@ -145,10 +145,58 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     private int messageNumber;
     private Point rectStartPoint;
     
+    /**
+     * Construct a new GUI session with a terminalModel of 2, and a terminalType of 3279-E.
+     */
     public JTerminalScreen() {
         super();
+        
         rw = new RW3270(2, this);
-
+        
+        init();
+    }
+    /**
+     * Construct a new GUI session with the specified terminalModel and terminalType.
+     * 
+     * @param terminalModel
+     * @param terminalType
+     */
+    public JTerminalScreen( int terminalModel, String terminalType ) {
+    	super();
+    	
+    	rw = new RW3270( terminalModel, this );
+    	
+    	init();
+    }
+    
+    /**
+     * Construct a new GUI session with a 3279-E terminalType and the specified model 
+     * where 2 <= terminalModel <= 5. 
+     * @param terminalModel
+     */
+    public JTerminalScreen( int terminalModel ) {
+    	super();
+    	
+    	rw = new RW3270( terminalModel, this );
+    	
+    	init();
+    }
+    
+    /**
+     * Construct a new GUI session with a model 2 (24x80) screen using either a
+     * 3278, 3279, or 3279-E terminalType.
+     * 
+     * @param terminalType
+     */
+    public JTerminalScreen( String terminalType ) {
+    	super();
+    	
+    	rw = new RW3270( 2, this );
+    	
+    	init();
+    }
+    
+    private void init() {
         frameBuff = new BufferedImage(DEFAULT_WIDTH, DEFAULT_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
         frame = frameBuff.createGraphics();
