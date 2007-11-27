@@ -1,0 +1,23 @@
+<projectDescription>
+  <name>freehost3270-web</name>
+  <comment>FreeHost 3270 is Java Web Application that provides access to
+    TN3270 host applications through a Java TN3270 Emulator Applet or
+    standalone application.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.wst.validation.validationbuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>com.genuitec.eclipse.ast.deploy.core.DeploymentBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>com.genuitec.eclipse.ast.deploy.core.deploymentnature</nature>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+    <nature>com.genuitec.eclipse.j2eedt.core.webnature</nature>
+  </natures>
+</projectDescription>

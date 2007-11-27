@@ -224,7 +224,7 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
         addMouseListener( mouseAdapter );
         addMouseMotionListener( mouseAdapter );
 
-        // originally, JPanel does not recieve focus
+        // originally, JPanel does not receive focus
         setFocusable(true);
 
         // to catch VK_TAB et al.
@@ -252,17 +252,18 @@ public class JTerminalScreen extends JPanel implements RWTnAction, KeyListener, 
     /**
      * Opens a connection to the destination terminal server host.
      *
-     * @param host
-     * @param port
-     * @param host3270
-     * @param port3270
-     * @param encryption DOCUMENT ME!
+     * @param host the host name or IP address of the SessionServer
+     * @param port the SessionServer's port
+     * @param host3270 the host name or IP address of the 3270 host. (If using
+     *        SessionServer)
+     * @param port3270 the port of the 3270 host
+     * @param encryption <code>true</code> if encryption should be used, false
+     *        otherwise.
      */
     public void connect(String host, int port, String host3270, int port3270,
         boolean encryption) {
         if (host == null) {
             log.warning("called connect with null host");
-
             return;
         }
 

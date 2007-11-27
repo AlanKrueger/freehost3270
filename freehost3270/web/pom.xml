@@ -38,6 +38,7 @@ requests from the applet to the terminal server.
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
@@ -48,6 +49,19 @@ requests from the applet to the terminal server.
 	  <descriptor>src/main/assembly/dep.xml</descriptor>
 	</configuration>
       </plugin>
+  <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-eclipse-plugin</artifactId>
+      <configuration>
+         <projectnatures>
+            <java.lang.String>com.genuitec.eclipse.j2eedt.core.webnature</java.lang.String>
+            <!-- e.g., also <java.lang.String>com.genuitec.eclipse.cross.easystruts.eclipse.easystrutsnature</java.lang.String> -->
+            <java.lang.String>org.eclipse.jdt.core.javanature</java.lang.String>
+          </projectnatures>
+          <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
+      </configuration>
+    </plugin>
+
     </plugins>
   </build>
 </project>

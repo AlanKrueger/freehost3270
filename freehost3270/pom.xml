@@ -10,7 +10,14 @@
   <packaging>pom</packaging>
   <name>FreeHost3270 modules suite</name>
   <url>http://freehost3270.sourceforge.net</url>
-  <description>
+  <licenses>
+  <license>
+    <name>LGPL</name>
+    <url>/doc/LICENSE.txt</url>
+    <distribution>repo</distribution>
+    <comments>A business-friendly OSS license</comments>
+  </license>
+  </licenses>  <description>
     FreeHost 3270 is Java Web Application that provides access to
     TN3270 host applications through a Java TN3270 Emulator Applet or
     standalone application.

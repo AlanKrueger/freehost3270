@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/freehost3270-applet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/freehost3270-gui"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/freehost3270-client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/freehost3270-proxy"/>
+	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
+</classpath>
