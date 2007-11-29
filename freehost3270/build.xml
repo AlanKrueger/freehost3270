@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="FreeHost3270" basedir=".">
+	<property name="project.name" value="FreeHost3270"/>
+	<property name="debug" value="true"/>
+	
+	<path id="compile.class.path">
+		<fileset dir="classes"/>
+	</path>
+	
+	<target name="init">
+		<mkdir dir="classes"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="classes"/>
+	</target>
+	
+	<target name="client" depends="init">
+		<javac srcdir="client/src"
+		       destdir="classes"
+			  debug="${debug}"
+			  source="1.5"
+			  target="1.5"
+			  excludes="**/*Test.java"
+			  classpathref="compile.class.path"
+		/>
+	</target>
+	
+	<target name="gui" depends="client">
+		<javac srcdir="gui/src"
+			destdir="classes"
+			debug="${debug}"
+			source="1.5"
+			target="1.5"
+			excludes="**/*Test.java"
+			classpathref="compile.class.path"
+		/>
+	</target>
+	
+	<target name="applet" depends="gui">
+		<javac srcdir="applet/src"
+			destdir="classes"
+			debug="${debug}"
+			source="1.5"
+			target="1.5"
+			excludes="**/*Test.java"
+			classpathref="compile.class.path"
+		/>
+	</target>
+	
+	<target name="app" depends="gui">
+		<javac srcdir="app/src"
+			destdir="classes"
+			debug="${debug}"
+			source="1.5"
+			target="1.5"
+			excludes="**/*Test.java"
+			classpathref="compile.class.path"
+		/>
+	</target>
+	
+	<target name="lib" depends="gui">
+		<jar destfile="${project.name}.jar"
+			basedir="classes"
+		/>
+	</target>
+	
+	<target name="run" depends="app">
+		<java classname="net.sf.freehost3270.application.ClientLauncher" fork="true" dir="classes"/>
+	</target>
+	
+</project>
