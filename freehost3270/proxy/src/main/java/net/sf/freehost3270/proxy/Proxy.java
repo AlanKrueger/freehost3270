@@ -22,11 +22,13 @@
 package net.sf.freehost3270.proxy;
 
 import java.io.IOException;
-
+import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.net.SocketTimeoutException;
+import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,6 +38,8 @@ import java.util.logging.Logger;
  * @since 0.1
  */
 public class Proxy implements ConnectionMonitor, Runnable {
+	private static final int SOCKET_TIME_OUT = 2000;
+
 	private static final Logger log = Logger.getLogger(Proxy.class.getName());
 
 	/** The socket used for listening for client requests. */
@@ -56,13 +60,28 @@ public class Proxy implements ConnectionMonitor, Runnable {
 	 *            default encryption on or off(t/f).
 	 * 
 	 * @throws IOException
-	 *             DOCUMENT ME!
+	 *             if we can't open the port
+	 * 
 	 */
 	public Proxy(int portNumber, boolean encryption) throws IOException {
 		log.info("starting proxy at port: " + portNumber);
 		connections = new Vector();
 		mainSocket = new ServerSocket(portNumber);
+		mainSocket.setSoTimeout(SOCKET_TIME_OUT);
 		encrypt = encryption;
+	}
+
+	/**
+	 * Instantiates a new FreeHost3270 Proxy with no encrption
+	 * 
+	 * @param portNumber
+	 *            integer representing the port on which to listen for clients.
+	 * @throws IOException
+	 *             if we can't open the port
+	 * 
+	 */
+	public Proxy(int portNumber) throws IOException {
+		this(portNumber, false);
 	}
 
 	/**
@@ -126,22 +145,58 @@ public class Proxy implements ConnectionMonitor, Runnable {
 	 */
 	public void run() {
 		log.info("running proxy thread");
+		boolean done = false;
 
-		while (!Thread.currentThread().isInterrupted()) {
-			try {
-				log.fine("waiting for new connections...");
-
-				Socket newSocket = mainSocket.accept();
-				log.fine("got new connection");
-				new Connection(newSocket, (ConnectionMonitor) this, encrypt);
-				log.fine("created Connection successful...");
-			} catch (IOException e) {
-				e.printStackTrace();
-				log.severe(e.getMessage());
+		try {
+			while (!done) {
+				if (Thread.currentThread().isInterrupted())
+					done = true;
+				Socket newSocket = null;
+				try {
+					newSocket = mainSocket.accept();
+					log.info("got new connection");
+					new Connection(newSocket, (ConnectionMonitor) this, encrypt);
+					log.info("created Connection...");
+				} catch (SocketTimeoutException e) {
+					if (done)
+						break;
+				} catch (InterruptedIOException e) {
+					e.printStackTrace();
+					log.severe(e.getMessage());
+					done = true;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					log.log(Level.SEVERE, "My guess is that the host name was more than 512 bytes",	e);
+					try {
+						if (newSocket != null)
+							newSocket.close();
+					} catch (IOException e1) {
+						log.log(Level.SEVERE,"Unable to close the socket with the long host name",	e1);
+					}
+				} catch (Exception e) {
+					log.log(Level.SEVERE, "Exception in main loop of proxy", e);
+					break;
+				}
 			}
+		} finally {
+			try {
+				mainSocket.close();
+				closeAllConnections();
+			} catch (IOException e) {
+				log.log(Level.WARNING, "Unable to close server socket", e);
+			}
+
+			log.info("exiting from the proxy wait connections loop");
+		}
+	}
+
+	private void closeAllConnections() {
+		Iterator i = connections.iterator();
+		while (i.hasNext()) {
+			Connection con = (Connection) i.next();
+			con.kill(false);
+
 		}
 
-		log.info("exiting from the proxy wait connections loop");
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -161,12 +216,11 @@ public class Proxy implements ConnectionMonitor, Runnable {
 		boolean encrypt = parseEncription(args);
 		Proxy prox = new Proxy(port, encrypt);
 		prox.run();
-		
-		
+
 	}
 
 	private static boolean parseEncription(String[] args) {
-		for (int i = 0; i < args.length; i++) 
+		for (int i = 0; i < args.length; i++)
 			if (args[i].equals("-e"))
 				return true;
 		return false;
@@ -192,7 +246,6 @@ public class Proxy implements ConnectionMonitor, Runnable {
 				}
 
 			}
-			
 
 		}
 		return port;

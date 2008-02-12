@@ -25,6 +25,7 @@ package net.sf.freehost3270.proxy;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.net.InetAddress;
 import java.net.Socket;
 
 import java.util.Date;
@@ -107,6 +108,8 @@ public class Connection implements Runnable, AgentMonitor {
     /** The current destination terminal server port number. */
     private int destPort = DEFAULT_DESTINATION_PORT;
 
+	private Thread myThread;
+
     /**
      * Called as soon as the server socket receives a request on this port.
      *
@@ -115,10 +118,11 @@ public class Connection implements Runnable, AgentMonitor {
      *        connections state.
      * @param encryption on/off(t/f)
      */
-    public Connection(Socket srcSocket, ConnectionMonitor cm,
-        boolean encryption) {
+    public Connection(Socket srcSocket, ConnectionMonitor cm, boolean encryption) {
         try {
-            log.fine("creating new Connection");
+            log.info("creating new Connection");
+            InetAddress remoteHost = srcSocket.getInetAddress();
+            log.info("Remote host:  " + remoteHost.getCanonicalHostName());
             this.srcSocket = srcSocket;
             this.cm = cm;
 
@@ -163,8 +167,8 @@ public class Connection implements Runnable, AgentMonitor {
                 log.fine("connecting to: " + destHost + ":" + destPort);
             }
 
-            Thread t = new Thread(this);
-            t.start();
+            myThread = new Thread(this);
+            myThread.start();
         } catch (Exception anException) {
             anException.printStackTrace();
             log.severe(anException.getMessage());
@@ -183,7 +187,7 @@ public class Connection implements Runnable, AgentMonitor {
             return;
         }
 
-        kill();
+        kill(true);
 
         //         closeSrc();
         //         closeDest();
@@ -201,7 +205,7 @@ public class Connection implements Runnable, AgentMonitor {
             return;
         }
 
-        kill();
+        kill(true);
 
         //         closeSrc();
         //         closeDest();
@@ -238,11 +242,13 @@ public class Connection implements Runnable, AgentMonitor {
      * Kills current connection, halts the <code>Connection</code> thread.
      * Removes current connection from the connection monitor.
      */
-    public void kill() {
+    public void kill(boolean removeSelf) {
         closeDest();
         closeSrc();
-        cm.removeConnection(this);
+        if (removeSelf)
+        	cm.removeConnection(this);
         connectionClosed = true;
+        myThread.interrupt();
     }
 
     /**
@@ -256,7 +262,7 @@ public class Connection implements Runnable, AgentMonitor {
             // dump the client.
             closeSrc();
         } else {
-            //System.out.println("Successfully connected to destination...");
+            System.out.println("Successfully connected to destination...");
             // Ok, we're all ready ... since we've gotten this far,
             // add ourselves into the connection list
             //System.out.println("Adding connection...");
