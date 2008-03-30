@@ -1,0 +1,23 @@
+				 ---
+	    Installing FreeHost3270 Standalone Application
+				 ---
+				 ---
+
+Installation instructions
+
+  Current release of the FreeHost3270 Standalone Application requires
+almost no installation. It comes packaged into an 'executable' JAR
+archive. On Microsoft Windows this means that the Application can be
+launched by simply double-clicking its JAR file in Explorer
+window. Otherwise, it can be launched from the command line:
+
+---
+java -jar freehost3270-app-bin-0.2.jar
+---
+
+Obtaining
+
+  Latest application release files can be downloaded from the
+Sourceforge.net
+{{{http://sourceforge.net/project/showfiles.php?group_id=25062}project
+download area}}.

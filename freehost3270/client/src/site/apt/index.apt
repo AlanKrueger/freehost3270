@@ -1,0 +1,42 @@
+				 ---
+		       FreeHost3270 Application
+				 ---
+				 ---
+			     23. Mar 2006
+
+Introduction
+
+  The 'FreeHost3270 Standalone Application' features rich access
+capabilities to the 3270 terminal. Its aim is to emulate legacy 3270
+terminals and to present a user with extended functionality.
+
+
+Goals
+
+  Final versions of the application should implement following features:
+
+  * Rich terminal emulation (full standard complience, plus printing,
+interaction with clipboard, configurable shortcuts, color and rendering themes).
+
+  * Integrated help system (based either on Sun's Java Help or SWT
+Help subsystems).
+
+  * Simple installation and flexible configuration.
+
+  * Keyboard macros and scripting capabilities.
+
+Current release
+
+  Current release features:
+
+  * Basic terminal emulation (no printing, no clipboard interaction,
+shortucts are fixed, color and fonts are configurable).
+
+  * No help system.
+
+  * Requires no installation. Configuration is not persistent yet.
+
+  * None of these.
+
+  As you see, much work is still to be done to make the Application a
+mature terminal access utility.

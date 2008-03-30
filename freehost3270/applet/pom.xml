@@ -13,7 +13,7 @@
   <distributionManagement>
     <site>
       <id>website</id>
-      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/applet/</url>
+      <url>scp://freehost3270.org/home/jstrayer/freehost3270.org/sub/applet/</url>
     </site>
   </distributionManagement>
   <dependencies>

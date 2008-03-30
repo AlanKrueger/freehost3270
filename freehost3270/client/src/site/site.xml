@@ -19,7 +19,7 @@
     </menu>
     
     <menu name="Subprojects">
-      <item name="App" href="../app/index.html"/>
+     <item name="App" href="../app/index.html"/>
       <item name="GUI" href="../gui/index.html"/>
       <item name="Proxy" href="../proxy/index.html" />
       <item name="Web" href="../web/index.html"/>

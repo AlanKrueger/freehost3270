@@ -20,7 +20,7 @@ requests from the applet to the terminal server.
   <distributionManagement>
     <site>
       <id>website</id>
-      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/web</url>
+      <url>scp://freehost3270.org/home/jstrayer/freehost3270.org/sub/web</url>
     </site>
   </distributionManagement>
   <dependencies>

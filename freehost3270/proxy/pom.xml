@@ -17,7 +17,7 @@ Client to terminal server proxy.
   <distributionManagement>
     <site>
       <id>website</id>
-      <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/sub/proxy</url>
+      <url>scp://freehost3270.org/home/jstrayer/freehost3270.org/sub/proxy</url>
     </site>
   </distributionManagement>
   <build>

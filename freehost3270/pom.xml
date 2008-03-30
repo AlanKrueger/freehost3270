@@ -1,138 +1,173 @@
 <?xml version="1.0"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.sf.freehost3270</groupId>
-  <version>0.2-CURRENT</version>
-  <artifactId>freehost3270-suite</artifactId>
-  <packaging>pom</packaging>
-  <name>FreeHost3270 modules suite</name>
-  <url>http://freehost3270.sourceforge.net</url>
-  <licenses>
-  <license>
-    <name>LGPL</name>
-    <url>/doc/LICENSE.txt</url>
-    <distribution>repo</distribution>
-    <comments>A business-friendly OSS license</comments>
-  </license>
-  </licenses>  <description>
-    FreeHost 3270 is Java Web Application that provides access to
-    TN3270 host applications through a Java TN3270 Emulator Applet or
-    standalone application.
-  </description>
-  <modules>
-    <module>client</module>
-    <module>gui</module>
-    <module>app</module>
-    <module>applet</module>
-    <module>proxy</module>
-    <module>web</module>
-  </modules>
-  <issueManagement>
-    <system>SourceForge tracker</system>
-    <url>http://sourceforge.net/tracker/?atid=383314&amp;group_id=25062</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/freehost3270:freehost3270</connection>
-  </scm>
-  <mailingLists>
-    <mailingList>
-      <name>FreeHost3270 users</name>
-      <subscribe>freehost3270-users@lists.sourceforge.net</subscribe>
-      <unsubscribe>freehost3270-users@lists.sourceforge.net</unsubscribe>
-      <post>freehost3270-users@lists.sourceforge.net</post>
-      <archive>http://sourceforge.net/mailarchive/forum.php?forum=freehost3270-users</archive>
-    </mailingList>
-  </mailingLists>
-  <developers>
-    <developer>
-      <id>anyakin</id>
-      <name>Victor Anyakin</name>
-      <email>anyakin@users.sourceforge.net</email>
-      <url>http://vityok.livejournal.com</url>
-      <organization/>
-      <organizationUrl/>
-      <roles>
-      	<role>Committer</role>
-      </roles>
-      <timezone>2</timezone>
-      <properties/>
-    </developer>
-    <developer>
-      <id>letherglov</id>
-      <name>Robbie Stone</name>
-      <email>letherglov@users.sourceforge.net</email>
-      <url/>
-      <organization/>
-      <organizationUrl/>
-      <roles>
-      	<role>Committer</role>
-      </roles>
-      <timezone>-8</timezone>
-      <properties/>
-    </developer>
-    <developer>
-      <id>jstrayer</id>
-      <name>Jon Strayer</name>
-      <email>jstrayer@users.sourceforge.net</email>
-      <url/>
-      <organization/>
-      <organizationUrl/>
-      <roles>
-      	<role>Committer</role>
-      </roles>
-      <timezone>-5</timezone>
-      <properties/>
-    </developer>
-  </developers>  
-  	<build>
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<configuration>
-	  <source>1.4</source>
-	  <target>1.4</target>
-	</configuration>
-      </plugin>
-      <plugin>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<configuration>
-	  <descriptor>src/main/assembly/src.xml</descriptor>
-	</configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <distributionManagement>
-  <site>
-    <id>website</id>
-    <url>scp://shell.sourceforge.net/home/groups/f/fr/freehost3270/htdocs/</url>
-  </site>
-</distributionManagement>
-  <reporting>
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-project-info-reports-plugin</artifactId>
-	<reportSets>
-	  <reportSet>
-	    <reports>
-	      <report>project-team</report>
-	      <report>mailing-list</report>
-	      <report>issue-tracking</report>
-	      <!--<report>license</report>-->
-	      <report>scm</report>
-	    </reports>
-	  </reportSet>
-	</reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
-<!-- /home/groups/f/fr/freehost3270/htdocs -->
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.sf.freehost3270</groupId>
+	<version>0.2-CURRENT</version>
+	<artifactId>freehost3270-suite</artifactId>
+	<packaging>pom</packaging>
+	<name>FreeHost3270 modules suite</name>
+	<url>http://freehost3270.org</url>
+	<licenses>
+		<license>
+			<name>LGPL</name>
+			<url>/doc/LICENSE.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	<description>
+		FreeHost 3270 is Java Web Application that provides access to
+		TN3270 host applications through a Java TN3270 Emulator Applet
+		or standalone application.
+	</description>
+	<modules>
+		<module>client</module>
+		<module>gui</module>
+		<module>app</module>
+		<module>applet</module>
+		<module>proxy</module>
+		<module>web</module>
+	</modules>
+	<issueManagement>
+		<system>SourceForge tracker</system>
+		<url>
+			http://sourceforge.net/tracker/?atid=383314&amp;group_id=25062
+		</url>
+	</issueManagement>
+	<scm>
+		<connection>
+			scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/freehost3270:freehost3270
+		</connection>
+	</scm>
+	<mailingLists>
+		<mailingList>
+			<name>FreeHost3270 users</name>
+			<subscribe>
+				freehost3270-users@lists.sourceforge.net
+			</subscribe>
+			<unsubscribe>
+				freehost3270-users@lists.sourceforge.net
+			</unsubscribe>
+			<post>freehost3270-users@lists.sourceforge.net</post>
+			<archive>
+				http://sourceforge.net/mailarchive/forum.php?forum=freehost3270-users
+			</archive>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<developer>
+			<id>anyakin</id>
+			<name>Victor Anyakin</name>
+			<email>anyakin@users.sourceforge.net</email>
+			<url>http://vityok.livejournal.com</url>
+			<organization />
+			<organizationUrl />
+			<roles>
+				<role>Committer</role>
+			</roles>
+			<timezone>2</timezone>
+			<properties />
+		</developer>
+		<developer>
+			<id>letherglov</id>
+			<name>Robbie Stone</name>
+			<email>letherglov@users.sourceforge.net</email>
+			<url />
+			<organization />
+			<organizationUrl />
+			<roles>
+				<role>Committer</role>
+			</roles>
+			<timezone>-8</timezone>
+			<properties />
+		</developer>
+		<developer>
+			<id>jstrayer</id>
+			<name>Jon Strayer</name>
+			<email>jstrayer@users.sourceforge.net</email>
+			<url />
+			<organization />
+			<organizationUrl />
+			<roles>
+				<role>Committer</role>
+			</roles>
+			<timezone>-5</timezone>
+			<properties />
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/main/assembly/src.xml</descriptor>
+				</configuration>
+			</plugin>
+		</plugins>
+		<extensions>
+		       <extension>
+                       <groupId>org.apache.maven.wagon</groupId>
+                       <artifactId>wagon-ftp</artifactId>
+                       <version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+	</build>
+	<distributionManagement>
+    	<repository>
+      		<uniqueVersion>false</uniqueVersion>
+      		<id>freehostRepository</id>
+      		<name>Freehost Repository</name>
+      		<url>scp://freehost3270.org/home/jstrayer/freehost3270.org/repository</url>
+      		<layout>default</layout>
+    	</repository>
+    	<snapshotRepository>
+      		<uniqueVersion>false</uniqueVersion>
+      		<id>freehostRepository</id>
+      		<name>Freehost Repository</name>
+      		<url>scp://freehost3270.org/home/jstrayer/freehost3270.org/repository</url>
+      		<layout>default</layout>
+    	</snapshotRepository>
+		<site>
+			<id>website</id>
+			<url>scp://freehost3270.org/home/jstrayer/freehost3270.org/sub/web
+			</url>
+		</site>
+	</distributionManagement>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>project-team</report>
+							<report>mailing-list</report>
+							<report>issue-tracking</report>
+							<!--<report>license</report>-->
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+	<!-- /home/groups/f/fr/freehost3270/htdocs -->
 </project>
