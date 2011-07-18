@@ -11,7 +11,7 @@ Client to terminal server proxy.
     <artifactId>freehost3270-suite</artifactId>
     <version>0.2-CURRENT</version>
   </parent>
-  <version>1.0.0</version>
+  <version>0.2-CURRENT</version>
   <artifactId>freehost3270-proxy</artifactId>
   <name>Freehost3270 relay proxy</name>
   <distributionManagement>
